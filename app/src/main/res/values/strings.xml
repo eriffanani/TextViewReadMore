@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">ReadMoreTextView</string>
+
+    <string name="lorem_ipsum">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the</string>
+    <string name="lorem_ipsum1">Nunc at placerat massa Maecenas sodales rutrum est sed efficitur Nunc at Nunc at placerat massa Maecenas sodales
+        placerat massa. asdfasf Maecenas sodales rutrum est sed efficitur.</string>
+    <string name="lorem_ipsum_list">1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n
+        2. Maecenas sodales rutrum est sed efficitur.\n
+        3. Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n
+        4. Nunc at placerat massa.\n
+        5. Maecenas sodales rutrum est sed efficitur.\n
+        6. Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n
+        7. Nunc at placerat massa.
+    </string>
+    <string name="lorem_ipsum3">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Maecenas sodales rutrum est sed efficitur. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Fusce eget ligula sed dolor accumsan tristique id vel turpis. Nam congue nunc hendrerit eros fermentum eleifend.
+        Sed tristique facilisis imperdiet. Donec eget interdum dui. Nulla sed varius ex.
+        Cras vel quam ac felis rutrum bibendum. Aenean consequat aliquam sapien in iaculis.
+        Vestibulum sollicitudin tellus cursus pellentesque ornare. Nullam faucibus rhoncus lorem ut finibus.
+        Nunc at placerat massa.</string>
+    <string name="lorem_ipsum4">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris pretium mauris vel
+        lacus vulputate, ac dictum velit tempus. Suspendisse potenti. Proin eget sem ullamcorper, faucibus orci vel,
+        facilisis sem. Nullam in metus at eros mattis malesuada. Vestibulum id justo sed ex interdum ultrices. Vestibulum
+        lobortis posuere felis, a dictum tortor. Etiam a gravida augue, at interdum lacus. Ut finibus metus orci, eget
+        lacinia turpis imperdiet et. Donec in sagittis erat. Aenean egestas vulputate nunc vel pulvinar. Pellentesque
+        habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Maecenas nec orci porta,
+        finibus quam ut, fringilla sapien. Maecenas tristique justo turpis, non pretium ligula sagittis luctus.
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum
+        scelerisque tristique hendrerit.
+            Cras vitae sapien pulvinar, accumsan nulla non, accumsan est. Praesent interdum turpis ut sem condimentum lobortis.
+        Vestibulum suscipit diam vel nisi convallis efficitur. Fusce dapibus hendrerit lobortis. Nulla sagittis nisl et
+        faucibus convallis. Proin eget hendrerit lectus, sed suscipit nunc. Pellentesque aliquam justo ut hendrerit
+        porttitor. Duis quis dignissim velit, non semper lorem. Phasellus pulvinar, mi vitae consectetur ullamcorper,
+        odio nisi luctus dolor, et accumsan erat tellus quis enim. Etiam finibus tortor nec viverra mattis. Nullam
+        vehicula, neque ac pretium gravida, magna libero placerat neque, et imperdiet velit turpis vestibulum sapien.
+            Quisque nec arcu ac metus euismod ultricies eu sed tortor. Nunc tristique tellus tortor, at semper ipsum hendrerit ac.
+        Sed aliquam imperdiet magna vitae vestibulum. Nullam aliquam, sapien vel semper dictum, felis velit interdum
+        libero, non condimentum dolor nulla quis erat. Fusce fermentum, ex et pretium pharetra, erat libero ultrices
+        erat, a luctus erat lacus vitae odio. Vestibulum vitae lectus eu dolor convallis pellentesque laoreet non tortor.
+        Maecenas ultricies suscipit condimentum. Suspendisse potenti. Proin ut porta felis. Aliquam eu eros mollis, commodo
+        dui vitae, iaculis purus. Phasellus fermentum malesuada justo vitae aliquam. Nam libero eros, vestibulum id volutpat
+        vitae, fringilla sed turpis. Sed convallis volutpat pretium.
+            Suspendisse potenti. Morbi ultricies rhoncus dui, ultricies condimentum tortor aliquam nec. Etiam in porttitor quam,
+        a pellentesque ipsum. Sed viverra sem felis, vitae sollicitudin leo aliquet non. Pellentesque magna neque,
+        sollicitudin ut dictum feugiat, molestie vitae lacus. Donec sit amet massa porta, tempor magna a, tristique
+        odio. Vivamus vel magna elit. Cras non orci fermentum, feugiat purus sed, tempus sapien. Donec a purus id magna
+        maximus porta. Ut feugiat, ex a efficitur rutrum, tortor leo rhoncus tortor, sed sollicitudin elit lacus non
+        risus. Proin id metus fermentum, feugiat magna vel, cursus libero.
+            Phasellus ultricies efficitur ipsum, eu tempor nisi auctor a. Aliquam neque lectus, rhoncus at arcu quis, vehicula
+        auctor enim. Etiam lacinia elit non leo finibus, non porttitor lorem tincidunt. Suspendisse ac urna ut quam
+        vehicula fringilla sed nunc. Nunc volutpat nisi vitae urna laoreet, eu facilisis ipsum facilisis. Aliquam
+        maximus egestas risus. Aenean ut elit vel nulla gravida sagittis. Class aptent taciti sociosqu ad litora torquent
+        per conubia nostra, per inceptos himenaeos.</string>
+
+</resources>
