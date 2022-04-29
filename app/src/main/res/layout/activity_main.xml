@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,7 +12,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
         android:maxLines="3"
-        android:background="#e3e3e3"
         android:animationDuration="300"
         android:text="@string/lorem_ipsum1"
         android:ellipsize="end" />
