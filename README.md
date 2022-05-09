@@ -66,7 +66,6 @@ txtReadMore.actionListener(new TextViewReadMoreCallback() {
     public void onExpand() {
       // TODO ACTION
     }
-    
     @Override
     public void onCollapse() {
       // TODO ACTION
@@ -79,9 +78,10 @@ txtReadMore.actionListener(object : TextViewReadMoreCallback {
     override fun onExpand() {
       // TODO ACTION
     }
-
     override fun onCollapse() {
       // TODO ACTION
     }
 })
 ```
+#### Information
+This library is still being developed further, please provide feedback if you find a bug.
