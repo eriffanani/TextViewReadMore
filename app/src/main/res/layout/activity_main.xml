@@ -13,7 +13,7 @@
         android:layout_margin="12dp"
         android:maxLines="3"
         android:ellipsize="end"
-        android:animationDuration="1000"
+        android:animationDuration="500"
         android:text="@string/lorem_ipsum3"/>
 
     <Button
