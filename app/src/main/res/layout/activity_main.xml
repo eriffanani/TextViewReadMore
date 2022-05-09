@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
     <com.erif.readmoretextview.TextViewReadMore
@@ -12,9 +12,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
         android:maxLines="3"
-        android:animationDuration="300"
-        android:text="@string/lorem_ipsum1"
-        android:ellipsize="end" />
+        android:ellipsize="end"
+        android:animationDuration="1000"
+        android:text="@string/lorem_ipsum3"/>
 
     <Button
         android:id="@+id/btnSet"
@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="12dp"
+        android:visibility="gone"
         android:text="Set Text"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -50,14 +50,9 @@ public class TextViewReadMore extends AppCompatTextView {
 
     private int animationDuration = 200;
 
-    private Callback callback;
+    private TextViewReadMoreCallback callback;
 
-    interface Callback {
-        void onExpand();
-        void onCollapse();
-    }
-
-    public void actionListener(Callback callback) {
+    public void actionListener(TextViewReadMoreCallback callback) {
         this.callback = callback;
     }
 
@@ -213,9 +208,6 @@ public class TextViewReadMore extends AppCompatTextView {
         if (expand) {
             setText(originalText);
             setMaxLines(Integer.MAX_VALUE);
-            if (callback != null) callback.onExpand();
-        } else {
-            if (callback != null) callback.onCollapse();
         }
         ValueAnimator animation = ValueAnimator.ofInt(fromHeight, targetHeight);
         animation.setDuration(animationDuration);
@@ -242,6 +234,7 @@ public class TextViewReadMore extends AppCompatTextView {
                 animating = false;
                 if (expand) {
                     createCollapseButton();
+                    if (callback != null) callback.onExpand();
                 } else {
                     setWrapContent();
                     setMaxLines(originalMaxLines);
@@ -249,6 +242,7 @@ public class TextViewReadMore extends AppCompatTextView {
                     builder.append(snippedText);
                     setText(builder);
                     createExpandButton();
+                    if (callback != null) callback.onCollapse();
                 }
             }
         };

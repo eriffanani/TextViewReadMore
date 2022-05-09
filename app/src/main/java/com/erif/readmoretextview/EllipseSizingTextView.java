@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class EllipsizingTextView  extends AppCompatTextView {
+public class EllipseSizingTextView extends AppCompatTextView {
     public static final int ELLIPSIZE_ALPHA = 0x88;
     private SpannableString ELLIPSIS = new SpannableString("\u2026 Read More");
 
@@ -42,17 +42,17 @@ public class EllipsizingTextView  extends AppCompatTextView {
      */
     private Pattern mEndPunctPattern;
 
-    public EllipsizingTextView(Context context) {
+    public EllipseSizingTextView(Context context) {
         this(context, null);
     }
 
 
-    public EllipsizingTextView(Context context, AttributeSet attrs) {
+    public EllipseSizingTextView(Context context, AttributeSet attrs) {
         this(context, attrs, android.R.attr.textViewStyle);
     }
 
 
-    public EllipsizingTextView(Context context, AttributeSet attrs, int defStyle) {
+    public EllipseSizingTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         TypedArray a = context.obtainStyledAttributes(attrs,
                 new int[]{android.R.attr.maxLines, android.R.attr.ellipsize}, defStyle, 0);
@@ -292,7 +292,7 @@ public class EllipsizingTextView  extends AppCompatTextView {
     }
 
     /**
-     * An {@link EllipsizingTextView.EllipsizeStrategy} that
+     * An {@link EllipseSizingTextView.EllipsizeStrategy} that
      * does not ellipsize text.
      */
     private class EllipsizeNoneStrategy extends EllipsizeStrategy {
@@ -303,7 +303,7 @@ public class EllipsizingTextView  extends AppCompatTextView {
     }
 
     /**
-     * An {@link EllipsizingTextView.EllipsizeStrategy} that
+     * An {@link EllipseSizingTextView.EllipsizeStrategy} that
      * ellipsizes text at the end.
      */
     private class EllipsizeEndStrategy extends EllipsizeStrategy {
@@ -345,7 +345,7 @@ public class EllipsizingTextView  extends AppCompatTextView {
     }
 
     /**
-     * An {@link EllipsizingTextView.EllipsizeStrategy} that
+     * An {@link EllipseSizingTextView.EllipsizeStrategy} that
      * ellipsizes text at the start.
      */
     private class EllipsizeStartStrategy extends EllipsizeStrategy {
@@ -378,7 +378,7 @@ public class EllipsizingTextView  extends AppCompatTextView {
     }
 
     /**
-     * An {@link EllipsizingTextView.EllipsizeStrategy} that
+     * An {@link EllipseSizingTextView.EllipsizeStrategy} that
      * ellipsizes text in the middle.
      */
     private class EllipsizeMiddleStrategy extends EllipsizeStrategy {

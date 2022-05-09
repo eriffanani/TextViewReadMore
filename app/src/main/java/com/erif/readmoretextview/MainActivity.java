@@ -1,7 +1,6 @@
 package com.erif.readmoretextview;
 
 import android.os.Bundle;
-import android.text.SpannableStringBuilder;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         TextViewReadMore txtReadMore = findViewById(R.id.txtReadMore);
-        txtReadMore.actionListener(new TextViewReadMore.Callback() {
+        txtReadMore.actionListener(new TextViewReadMoreCallback() {
             @Override
             public void onExpand() {
                 //Toast.makeText(txtReadMore.getContext(), "Expand", Toast.LENGTH_SHORT).show();
