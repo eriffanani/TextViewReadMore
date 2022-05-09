@@ -84,4 +84,4 @@ txtReadMore.actionListener(object : TextViewReadMoreCallback {
 })
 ```
 #### Information
-This library is still being developed further, please provide feedback if you find a bug.
+This library is still being developed further, please provide feedback if you find a bug. Thank you
