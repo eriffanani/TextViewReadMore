@@ -140,10 +140,11 @@ public class TextViewReadMore extends AppCompatTextView {
                             expand = false;
                         }
                     } else {
+                        String getMainText = getText().toString();
                         int lastCharDown = getLayout().getLineVisibleEnd(originalMaxLines - 1);
                         String dots = "... ";
                         int end = lastCharDown - dots.length() - expandText.length();
-                        String mainText = getText().toString().subSequence(0, end).toString();
+                        String mainText = getMainText.subSequence(0, end).toString();
                         originalText = getText().toString();
                         snippedText = mainText + dots;
                         measuring();
