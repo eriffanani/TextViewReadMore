@@ -89,6 +89,12 @@ txtReadMore.actionListener(object : TextViewReadMoreCallback {
     }
 })
 ```
+#### With recyclerview trick
+Set your recyclerview cache size to optimize textview behavior
+```java
+recyclerview.setItemViewCacheSize(list.size())
+```
+
 #### Information
 This library is still being developed further, please provide feedback if you find a bug. Thank you
 ### Licence
