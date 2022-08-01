@@ -12,6 +12,12 @@ maven { url 'https://jitpack.io' }
 implementation 'com.github.eriffanani:TextViewReadMore:1.0.0'
 ```
 
+#### New properties
+Set textview collapsable true or false
+```xml
+app:collapsable="true/false"
+```
+
 ## How To Use
 * Basic
 ```xml
