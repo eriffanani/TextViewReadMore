@@ -4,6 +4,7 @@
         <attr name="expandText" format="string"/>
         <attr name="expandTextColor" format="reference|color"/>
         <attr name="expandTextUnderline" format="boolean"/>
+        <attr name="collapsable" format="boolean"/>
         <attr name="expandTextStyle">
             <flag name="normal" value="0" />
             <flag name="bold" value="1" />

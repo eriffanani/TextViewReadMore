@@ -9,6 +9,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -16,7 +17,6 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -28,7 +28,6 @@ public class TextViewReadMore extends AppCompatTextView {
 
     private static final String DEFAULT_EXPAND_TEXT = "Read More";
     private static final String DEFAULT_COLLAPSE_TEXT = "Close";
-
     private SpannableStringBuilder builder;
     private boolean expand = false;
     private int originalMaxLines = 0;
@@ -37,20 +36,18 @@ public class TextViewReadMore extends AppCompatTextView {
     private String originalText = null;
     private String snippedText = null;
     private boolean animating = false;
-
     private String expandText = null;
     private int expandTextColor;
     private int expandTextStyle = 0;
     private boolean expandTextUnderline = false;
-
     private String collapseText;
     private int collapseTextColor;
     private int collapseTextStyle = 0;
     private boolean collapseTextUnderline = false;
-
     private int animationDuration = 200;
-
     private TextViewReadMoreCallback callback;
+    private boolean stale = true;
+    private boolean collapsable = true;
 
     public void actionListener(TextViewReadMoreCallback callback) {
         this.callback = callback;
@@ -86,10 +83,12 @@ public class TextViewReadMore extends AppCompatTextView {
                 expandTextUnderline = typedArray.getBoolean(R.styleable.TextViewReadMore_expandTextUnderline, false);
 
                 String getCollapseText = typedArray.getString(R.styleable.TextViewReadMore_collapseText);
-                collapseText = TextUtils.isEmpty(getCollapseText) ? DEFAULT_COLLAPSE_TEXT : getCollapseText;
+                collapseText = getCollapseText == null ? DEFAULT_COLLAPSE_TEXT : getCollapseText;
                 collapseTextColor = typedArray.getColor(R.styleable.TextViewReadMore_collapseTextColor, Color.BLUE);
                 collapseTextStyle = typedArray.getInt(R.styleable.TextViewReadMore_collapseTextStyle, 0);
                 collapseTextUnderline = typedArray.getBoolean(R.styleable.TextViewReadMore_collapseTextUnderline, false);
+                originalText = getText().toString();
+                collapsable = typedArray.getBoolean(R.styleable.TextViewReadMore_collapsable, true);
 
                 originalMaxLines = getMaxLines();
 
@@ -100,15 +99,20 @@ public class TextViewReadMore extends AppCompatTextView {
             } finally {
                 typedArray.recycle();
             }
-        } else {
-            debug("Theme is null");
         }
         setOnClickListener(v -> {
             if ((snippedText != null && getText().toString().equals(snippedText+expandText)) ||
                     (originalText != null && getText().toString().equals(originalText+" "+collapseText))
             ) {
-                expand = !expand;
-                readMore();
+                if (collapsable) {
+                    expand = !expand;
+                    animateTextHeight();
+                } else {
+                    if (!expand) {
+                        expand = true;
+                        animateTextHeight();
+                    }
+                }
             }
         });
     }
@@ -116,48 +120,46 @@ public class TextViewReadMore extends AppCompatTextView {
     @Override
     public void setText(CharSequence text, BufferType type) {
         super.setText(text, type);
+        stale = true;
+    }
+
+    private boolean isEllipsized() {
+        Layout layout = getLayout();
+        return layout.getEllipsisCount(getLineCount() - 1) > 0;
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        stale = true;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        debug("On Draw");
-        //debug("Expand: "+expand+" - Anim: "+animating);
-        if (!animating) {
-            if (getVisibility() == View.VISIBLE && getLineCount() > 0 && getLayout() != null) {
-                if (getLineCount() > originalMaxLines) {
-                    if (expand) {
-                        if (originalText != null && !getText().toString().equals(originalText+" "+collapseText)) {
-                            //setWrapContent();
-                            String dots = "... ";
-                            int lastCharDown = getLayout().getLineVisibleEnd(originalMaxLines - 1);
-                            int end = lastCharDown - dots.length() - expandText.length();
-                            String mainText = getText().toString().subSequence(0, end).toString();
-                            originalText = getText().toString();
-                            snippedText = mainText + dots;
-                            measuring();
-                            createExpandButton();
-                            expand = false;
+        if (expand) {
+            if (stale) {
+                createCollapseButton();
+            }
+        } else {
+            if (!animating) {
+                if (getVisibility() == View.VISIBLE) {
+                    if (getLayout() != null) {
+                        if (isEllipsized()) {
+                            if (stale) {
+                                int lastIndex = getLayout().getEllipsisCount(getLineCount() - 1);
+                                if (lastIndex < (expandText.length() + 4)) {
+                                    lastIndex = getLayout().getLineVisibleEnd(getLineCount() - 1);
+                                } else {
+                                    String dots = "... ";
+                                    lastIndex = getText().length() - (lastIndex + dots.length() + expandText.length());
+                                }
+                                if (lastIndex > 0) {
+                                    measuring();
+                                    createSnipped(lastIndex);
+                                }
+                            }
                         }
-                    } else {
-                        String getMainText = getText().toString();
-                        int lastCharDown = getLayout().getLineVisibleEnd(originalMaxLines - 1);
-                        String dots = "... ";
-                        int end = lastCharDown - dots.length() - expandText.length();
-                        String mainText = getMainText.subSequence(0, end).toString();
-                        originalText = getText().toString();
-                        snippedText = mainText + dots;
-                        measuring();
-                        createExpandButton();
-                    }
-                } else {
-                    if (originalText != null && !getText().toString().equals(originalText+" "+collapseText)) {
-                        setWrapContent();
-                    }
-                    int getEllipsize = getLayout().getEllipsisCount(getLineCount() - 1);
-                    if (getEllipsize > 0) {
-                        measuring();
-                        createSnipped(getEllipsize);
                     }
                 }
             }
@@ -176,13 +178,22 @@ public class TextViewReadMore extends AppCompatTextView {
         setMaxLines(originalMaxLines);
     }
 
-    private void createSnipped(int ellipsis) {
+    private void createSnipped(int lastIndex) {
         String dots = "... ";
-        int end = getText().toString().length() - (ellipsis + dots.length() + expandText.length());
-        String mainText = getText().toString().subSequence(0, end).toString();
-        originalText = getText().toString();
-        snippedText = mainText + dots;
-        createExpandButton();
+        if (lastIndex > 0) {
+            String mainText = getText().toString().subSequence(0, lastIndex).toString();
+            String lastChar = mainText.substring(mainText.length() - 1);
+            String newline = System.getProperty("line.separator");
+            if (newline != null) {
+                boolean hasNewline = lastChar.contains(newline);
+                if(hasNewline)
+                    mainText = getText().toString().subSequence(0, lastIndex -1).toString();
+            }
+            originalText = getText().toString();
+            snippedText = mainText + dots;
+            createExpandButton();
+            stale = false;
+        }
     }
 
     private void createExpandButton() {
@@ -201,9 +212,10 @@ public class TextViewReadMore extends AppCompatTextView {
         builder.append(collapseText);
         collapseTextStyle(builder, start);
         setText(builder);
+        stale = false;
     }
 
-    private void readMore() {
+    private void animateTextHeight() {
         int fromHeight = expand ? originalHeight : maxHeight;
         int targetHeight = expand ? maxHeight : originalHeight;
         if (expand) {
@@ -212,10 +224,11 @@ public class TextViewReadMore extends AppCompatTextView {
         }
         ValueAnimator animation = ValueAnimator.ofInt(fromHeight, targetHeight);
         animation.setDuration(animationDuration);
-        ViewGroup.LayoutParams param = getLayoutParams();
         animation.addUpdateListener(valueAnimator -> {
+            ViewGroup.LayoutParams param = getLayoutParams();
             param.height = (int) valueAnimator.getAnimatedValue();
             setLayoutParams(param);
+            requestLayout();
         });
         animation.addListener(animatorListener());
         animation.start();
@@ -304,15 +317,9 @@ public class TextViewReadMore extends AppCompatTextView {
         return View.MeasureSpec.makeMeasureSpec(size, mode);
     }
 
-    private void debug(String message) {
-        Log.d("TextViewReadMore", message == null ? "null" : message);
-    }
-
     private void setWrapContent() {
         ViewGroup.LayoutParams param = getLayoutParams();
         param.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         setLayoutParams(param);
-        debug("wrap");
     }
-
 }

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
     <com.erif.readmoretextview.TextViewReadMore
@@ -11,18 +12,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
-        android:maxLines="3"
+        android:maxLines="2"
         android:ellipsize="end"
-        android:animationDuration="500"
-        android:text="@string/lorem_ipsum3"/>
+        android:text="@string/lorem_ipsum2"/>
 
     <Button
         android:id="@+id/btnSet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
+        android:layout_gravity="bottom|center_horizontal"
         android:layout_margin="12dp"
-        android:visibility="gone"
-        android:text="Set Text"/>
+        android:text="Set Text"
+        android:visibility="gone" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/act_main_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="14dp"
+        android:src="@drawable/ic_list"
+        app:backgroundTint="@color/purple_500"
+        app:tint="@color/white"
+        tools:ignore="ContentDescription" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
