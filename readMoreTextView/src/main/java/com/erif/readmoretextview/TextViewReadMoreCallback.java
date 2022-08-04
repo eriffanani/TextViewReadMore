@@ -1,6 +1,5 @@
 package com.erif.readmoretextview;
 
 public interface TextViewReadMoreCallback {
-    void onExpand();
-    void onCollapse();
+    public void actionListener(boolean collapsed);
 }

@@ -2,6 +2,7 @@ package com.erif.readmoretextview;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,18 +14,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TextViewReadMore txtReadMore = findViewById(R.id.txtReadMore);
-        txtReadMore.actionListener(new TextViewReadMoreCallback() {
-            @Override
-            public void onExpand() {
-                //Toast.makeText(txtReadMore.getContext(), "Expand", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCollapse() {
-                //Toast.makeText(txtReadMore.getContext(), "Collapse", Toast.LENGTH_SHORT).show();
-            }
-        });
+        TextViewReadMore2 txtReadMore = findViewById(R.id.txtReadMore);
+        txtReadMore.onClickExpand(v -> txtReadMore.toggle());
+        txtReadMore.onClickCollapse(v -> txtReadMore.toggle());
 
         findViewById(R.id.btnSet).setOnClickListener(v -> {
             String lorem = getResources().getString(R.string.lorem_ipsum);
@@ -54,6 +46,10 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+    }
+
+    private void debug(String message) {
+        Log.d("TextViewReadMore", message);
     }
 
 }

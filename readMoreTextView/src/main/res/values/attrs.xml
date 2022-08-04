@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="TextViewReadMore">
+        <attr name="android:text"/> <!---->
+        <attr name="android:maxLines"/> <!---->
+        <attr name="collapsed" format="boolean"/> <!---->
         <attr name="expandText" format="string"/>
         <attr name="expandTextColor" format="reference|color"/>
         <attr name="expandTextUnderline" format="boolean"/>
@@ -26,4 +29,21 @@
             <enum name="end" value="3"/>
         </attr>-->
     </declare-styleable>
+
+    <declare-styleable name="TextViewReadMore2">
+        <attr name="android:text"/>
+        <attr name="readMoreMaxLines" format="integer"/>
+        <attr name="collapsed"/>
+        <attr name="expandText"/>
+        <attr name="expandTextColor"/>
+        <attr name="expandTextUnderline"/>
+        <attr name="expandTextStyle"/>
+        <attr name="collapseText"/>
+        <attr name="collapseTextColor"/>
+        <attr name="collapseTextUnderline"/>
+        <attr name="collapseTextStyle"/>
+        <attr name="android:animationDuration"/>
+        <attr name="actionClickColor" format="reference|color"/>
+    </declare-styleable>
+
 </resources>

@@ -13,15 +13,12 @@
         android:layout_height="wrap_content"
         android:padding="10dp">
 
-        <com.erif.readmoretextview.TextViewReadMore
+        <com.erif.readmoretextview.TextViewReadMore2
             android:id="@+id/item_recyclerView_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="2"
-            app:collapseText=""
-            android:textColor="@color/black"
-            android:text="@string/lorem_ipsum1"/>
+            android:text="@string/lorem_ipsum1"
+            android:textColor="@color/black" />
 
     </RelativeLayout>
 

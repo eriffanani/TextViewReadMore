@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.erif.readmoretextview.R;
-import com.erif.readmoretextview.TextViewReadMore;
+import com.erif.readmoretextview.TextViewReadMore2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +28,18 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof Holder) {
+            Holder mHolder = (Holder) holder;
             ModelItemRecyclerView item = list.get(position);
-            ((Holder) holder).text.setText(item.getText());
+            mHolder.text.setText(item.getText());
+            mHolder.text.collapsed(item.isCollapsed());
+            mHolder.text.onClickExpand(v -> mHolder.text.toggle());
+            mHolder.text.onClickCollapse(v -> mHolder.text.toggle());
+
+            mHolder.text.actionListener(collapsed -> {
+                item.setCollapsed(collapsed);
+                update(position);
+            });
+
         }
     }
 
@@ -44,8 +54,12 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewH
         notifyDataSetChanged();
     }
 
+    private void update(int position) {
+        notifyItemChanged(position);
+    }
+
     private static class Holder extends RecyclerView.ViewHolder {
-        private final TextViewReadMore text;
+        private final TextViewReadMore2 text;
         public Holder(@NonNull View itemView) {
             super(itemView);
             text = itemView.findViewById(R.id.item_recyclerView_txt);

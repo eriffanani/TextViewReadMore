@@ -4,6 +4,7 @@ public class ModelItemRecyclerView {
 
     private int id;
     private String text;
+    private boolean collapsed = true;
 
     public ModelItemRecyclerView() {}
 
@@ -26,5 +27,13 @@ public class ModelItemRecyclerView {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public boolean isCollapsed() {
+        return collapsed;
+    }
+
+    public void setCollapsed(boolean collapsed) {
+        this.collapsed = collapsed;
     }
 }

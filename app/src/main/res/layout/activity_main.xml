@@ -7,23 +7,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
-    <com.erif.readmoretextview.TextViewReadMore
+    <com.erif.readmoretextview.TextViewReadMore2
         android:id="@+id/txtReadMore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:text="@string/lorem_ipsum2"/>
+        android:background="#e3e3e3"
+        app:collapsed="false"
+        android:text="@string/lorem_ngawur_wur"
+        app:readMoreMaxLines="2"/>
 
     <Button
         android:id="@+id/btnSet"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_margin="12dp"
-        android:text="Set Text"
-        android:visibility="gone" />
+        android:text="Set Text" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/act_main_fab"
