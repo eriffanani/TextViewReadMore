@@ -158,14 +158,14 @@ public class TextViewReadMore extends AppCompatTextView {
                 StaticLayout.Builder staticFull = StaticLayout.Builder
                         .obtain(fullText, 0, fullText.length(), getPaint(), lineWidth)
                         .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier());
-                fullHeight = staticFull.build().getHeight();
+                fullHeight = staticFull.build().getHeight() + getCompoundPaddingTop() + getCompoundPaddingBottom();
 
                 StaticLayout.Builder staticHalf = StaticLayout.Builder
                         .obtain(text, 0, text.length(), getPaint(), lineWidth)
                         .setMaxLines(maxLines)
                         .setEllipsize(TextUtils.TruncateAt.END)
                         .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier());
-                halfHeight = staticHalf.build().getHeight();
+                halfHeight = staticHalf.build().getHeight() + getCompoundPaddingTop() + getCompoundPaddingBottom();
                 if (rebuild) {
                     if (collapsed) {
                         collapsedBuilder();
@@ -201,7 +201,6 @@ public class TextViewReadMore extends AppCompatTextView {
                 .setEllipsize(TextUtils.TruncateAt.END)
                 .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier())
                 .build();
-        halfHeight = staticLayout.getHeight();
         int sumOfLw = 0;
         for (int i=0; i<staticLayout.getLineCount(); i++) {
             int count = (int) staticLayout.getLineWidth(i);
@@ -264,11 +263,6 @@ public class TextViewReadMore extends AppCompatTextView {
 
     private void expandBuilder() {
         String fullText = text+collapseText;
-        StaticLayout staticLayout = StaticLayout.Builder
-                .obtain(fullText, 0, fullText.length(), getPaint(), lineWidth)
-                .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier())
-                .build();
-        fullHeight = staticLayout.getHeight();
         spanExpanded = spanExpanded(fullText);
     }
 
