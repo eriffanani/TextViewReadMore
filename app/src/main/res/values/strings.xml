@@ -77,4 +77,7 @@
         Fusce eget ligula sed dolor accumsan tristique id vel turpis. Nam congue nunc hendrerit eros fermentum eleifend.
         Sed tristique facilisis imperdiet. Donec eget interdum dui. Sed tristique facilisis imperdiet. Donec</string>
 
+    <string name="read_more">Buka Dong</string>
+    <string name="read_less">Tutup Ah</string>
+
 </resources>

@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.StaticLayout;
@@ -30,7 +31,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 
-public class TextViewReadMore2 extends AppCompatTextView {
+public class TextViewReadMore extends AppCompatTextView {
 
     private static final String DEFAULT_EXPAND_TEXT = "Read More";
     private static final String DEFAULT_COLLAPSE_TEXT = "Close";
@@ -57,7 +58,7 @@ public class TextViewReadMore2 extends AppCompatTextView {
     private boolean isAnimate = false;
     private boolean isEllipsized = false;
     private int animationDuration = 200;
-    private TextViewReadMoreCallback callback;
+    private ToggleListener toggleListener;
 
     private SpannableStringBuilder spanCollapsed;
     private SpannableStringBuilder spanExpanded;
@@ -66,17 +67,19 @@ public class TextViewReadMore2 extends AppCompatTextView {
     private View.OnClickListener onClickCollapse;
     private int actionClickColor = 0;
 
-    public TextViewReadMore2(@NonNull Context context) {
+    private static long mLastClickTime = 0;
+
+    public TextViewReadMore(@NonNull Context context) {
         super(context);
         init(context, null, 0);
     }
 
-    public TextViewReadMore2(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public TextViewReadMore(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs, 0);
     }
 
-    public TextViewReadMore2(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TextViewReadMore(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs, defStyleAttr);
     }
@@ -85,30 +88,30 @@ public class TextViewReadMore2 extends AppCompatTextView {
         Resources.Theme theme = context.getTheme();
         if (theme != null) {
             TypedArray typedArray = theme.obtainStyledAttributes(
-                    attrs, R.styleable.TextViewReadMore2, defStyleAttr, 0
+                    attrs, R.styleable.TextViewReadMore, defStyleAttr, 0
             );
             try {
-                text = typedArray.getString(R.styleable.TextViewReadMore2_android_text);
-                int getMaxLines = typedArray.getInt(R.styleable.TextViewReadMore2_readMoreMaxLines, 2);
+                text = typedArray.getString(R.styleable.TextViewReadMore_android_text);
+                int getMaxLines = typedArray.getInt(R.styleable.TextViewReadMore_readMoreMaxLines, 2);
                 maxLines = Math.max(getMaxLines, 1);
-                collapsed = typedArray.getBoolean(R.styleable.TextViewReadMore2_collapsed, true);
+                collapsed = typedArray.getBoolean(R.styleable.TextViewReadMore_collapsed, true);
 
-                String getExpandText = typedArray.getString(R.styleable.TextViewReadMore2_expandText);
+                String getExpandText = typedArray.getString(R.styleable.TextViewReadMore_expandText);
                 expandText = TextUtils.isEmpty(getExpandText) ? DEFAULT_EXPAND_TEXT : getExpandText;
-                expandTextColor = typedArray.getColor(R.styleable.TextViewReadMore2_expandTextColor, Color.BLUE);
-                expandTextStyle = typedArray.getInt(R.styleable.TextViewReadMore2_expandTextStyle, 0);
-                expandTextUnderline = typedArray.getBoolean(R.styleable.TextViewReadMore2_expandTextUnderline, expandTextUnderline);
+                expandTextColor = typedArray.getColor(R.styleable.TextViewReadMore_expandTextColor, Color.BLUE);
+                expandTextStyle = typedArray.getInt(R.styleable.TextViewReadMore_expandTextStyle, 0);
+                expandTextUnderline = typedArray.getBoolean(R.styleable.TextViewReadMore_expandTextUnderline, expandTextUnderline);
 
-                String getCollapseText = typedArray.getString(R.styleable.TextViewReadMore2_collapseText);
+                String getCollapseText = typedArray.getString(R.styleable.TextViewReadMore_collapseText);
                 collapseText = getCollapseText == null ? DEFAULT_COLLAPSE_TEXT : getCollapseText;
-                collapseTextColor = typedArray.getColor(R.styleable.TextViewReadMore2_collapseTextColor, Color.BLUE);
-                collapseTextStyle = typedArray.getInt(R.styleable.TextViewReadMore2_collapseTextStyle, 0);
-                collapseTextUnderline = typedArray.getBoolean(R.styleable.TextViewReadMore2_collapseTextUnderline, collapseTextUnderline);
+                collapseTextColor = typedArray.getColor(R.styleable.TextViewReadMore_collapseTextColor, Color.BLUE);
+                collapseTextStyle = typedArray.getInt(R.styleable.TextViewReadMore_collapseTextStyle, 0);
+                collapseTextUnderline = typedArray.getBoolean(R.styleable.TextViewReadMore_collapseTextUnderline, collapseTextUnderline);
 
                 int defaultActionClickColor = ContextCompat.getColor(context, R.color.text_view_read_more_button_hover_color);
-                actionClickColor = typedArray.getColor(R.styleable.TextViewReadMore2_actionClickColor, defaultActionClickColor);
+                actionClickColor = typedArray.getColor(R.styleable.TextViewReadMore_actionClickColor, defaultActionClickColor);
 
-                int getAnimationDuration = typedArray.getInt(R.styleable.TextViewReadMore2_android_animationDuration, animationDuration);
+                int getAnimationDuration = typedArray.getInt(R.styleable.TextViewReadMore_android_animationDuration, animationDuration);
                 if (getAnimationDuration > 1000) {
                     animationDuration = 1000;
                 } else animationDuration = Math.max(getAnimationDuration, 100);
@@ -311,11 +314,14 @@ public class TextViewReadMore2 extends AppCompatTextView {
                 invalidate();
             }
         }, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        //setMovementMethod(LinkMovementMethod.getInstance());
         return span;
     }
 
     public void toggle() {
+        if (SystemClock.elapsedRealtime() - mLastClickTime <= animationDuration) { // 1000 = 1second
+            return;
+        }
+        mLastClickTime = SystemClock.elapsedRealtime();
         setMovementMethod(null);
         int start = collapsed ? halfHeight : fullHeight;
         int end = collapsed ? fullHeight : halfHeight;
@@ -341,7 +347,7 @@ public class TextViewReadMore2 extends AppCompatTextView {
                 collapsed = !collapsed;
                 rebuild = true;
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    if (callback != null) callback.actionListener(collapsed);
+                    if (toggleListener != null) toggleListener.onToggle(collapsed);
                 }, 100);
             }
         });
@@ -367,8 +373,8 @@ public class TextViewReadMore2 extends AppCompatTextView {
         );
     }
 
-    public void actionListener(TextViewReadMoreCallback callback) {
-        this.callback = callback;
+    public void toggleListener(ToggleListener toggleListener) {
+        this.toggleListener = toggleListener;
     }
     public void onClickExpand(View.OnClickListener onClickExpand) {
         this.onClickExpand = onClickExpand;
@@ -379,6 +385,10 @@ public class TextViewReadMore2 extends AppCompatTextView {
 
     private void debug(String message) {
         Log.d("TextViewReadMore", message);
+    }
+
+    public interface ToggleListener {
+        public void onToggle(boolean collapsed);
     }
 
 }

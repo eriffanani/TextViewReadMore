@@ -56,9 +56,9 @@ public class MainActivityRecyclerView extends AppCompatActivity {
         List<ModelItemRecyclerView> list = new ArrayList<>();
         for (int i=0; i<arr.length; i++) {
             ModelItemRecyclerView item = new ModelItemRecyclerView(i, arr[i]);
-            /*if (i == 0) {
+            if (i == 3) {
                 item.setCollapsed(false);
-            }*/
+            }
             list.add(item);
         }
         adapter.setList(list);

@@ -7,15 +7,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
-    <com.erif.readmoretextview.TextViewReadMore2
+    <com.erif.readmoretextview.TextViewReadMore
         android:id="@+id/txtReadMore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
-        android:background="#e3e3e3"
-        app:collapsed="false"
-        android:text="@string/lorem_ngawur_wur"
-        app:readMoreMaxLines="2"/>
+        app:readMoreMaxLines="2"
+        app:expandText="@string/read_more"
+        app:expandTextStyle="bold|italic"
+        app:expandTextColor="@color/teal_700"
+        app:expandTextUnderline="true"
+
+        app:collapseText="@string/read_less"
+        app:collapseTextStyle="italic"
+        app:collapseTextColor="@color/teal_700"
+        app:collapseTextUnderline="true"
+        app:actionClickColor="@color/teal_200"
+
+        android:text="@string/lorem_ngawur" />
 
     <Button
         android:id="@+id/btnSet"
@@ -23,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:layout_margin="12dp"
-        android:text="Set Text" />
+        android:text="Change Text" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/act_main_fab"

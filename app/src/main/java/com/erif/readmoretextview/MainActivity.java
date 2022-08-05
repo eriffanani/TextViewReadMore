@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TextViewReadMore2 txtReadMore = findViewById(R.id.txtReadMore);
+        TextViewReadMore txtReadMore = findViewById(R.id.txtReadMore);
         txtReadMore.onClickExpand(v -> txtReadMore.toggle());
         txtReadMore.onClickCollapse(v -> txtReadMore.toggle());
 
