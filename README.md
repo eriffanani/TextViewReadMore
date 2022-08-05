@@ -9,13 +9,7 @@ maven { url 'https://jitpack.io' }
 
 #### dependencies
 ```kotlin
-implementation 'com.github.eriffanani:TextViewReadMore:1.0.0'
-```
-
-#### New properties
-Set textview collapsable true or false
-```xml
-app:collapsable="true/false"
+implementation 'com.github.eriffanani:TextViewReadMore:1.5.2'
 ```
 
 ## How To Use
@@ -24,8 +18,7 @@ app:collapsable="true/false"
 <com.erif.readmoretextview.TextViewReadMore
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:maxLines="3"
-    android:ellipsize="end"
+    app:readMoreMaxLines="3"
     android:text="YOUR TEXT HERE"/>
 ```
 ![basic](https://user-images.githubusercontent.com/26743731/167334745-3915b937-a0b4-4524-a0b4-47b165143ec7.png)
@@ -36,8 +29,7 @@ app:collapsable="true/false"
 <com.erif.readmoretextview.TextViewReadMore
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:maxLines="3"
-    android:ellipsize="end"
+    app:readMoreMaxLines="3"
     app:expandText="Open Text"
     app:expandTextColor="@color/teal_200"
     app:expandTextStyle="bold|italic"
@@ -50,7 +42,8 @@ app:collapsable="true/false"
     app:collapseText="Close"
     app:collapseTextColor="@color/teal_200"
     app:collapseTextStyle="bold|italic"
-    app:collapseTextUnderline="true"/>
+    app:collapseTextUnderline="true"
+    app:collapsed="false"/>
 ```
 ![styling](https://user-images.githubusercontent.com/26743731/167335646-86eb9860-b40e-4281-be49-644993cd49e1.png)
 
@@ -63,36 +56,52 @@ app:collapsable="true/false"
     android:animationDuration="1000"/>
 ```
 
+### Action
+```xml
+<com.erif.readmoretextview.TextViewReadMore
+    app:actionClickColor="@color/colorRed"/>
+```
+```java
+txtReadMore.onClickExpand(v -> txtReadMore.toggle());
+txtReadMore.onClickCollapse(v -> txtReadMore.toggle());
+```
+
 ### Callback
 * Java
 ```Java
-TextViewReadMore txtReadMore = findViewById(R.id.txtReadMore);
-txtReadMore.actionListener(new TextViewReadMoreCallback() {
-    @Override
-    public void onExpand() {
-      // TODO ACTION
-    }
-    @Override
-    public void onCollapse() {
-      // TODO ACTION
-    }
+txtReadMore.toggleListener(collapsed -> {
+    // TODO ACTION
 });
 ```
 * Kotlin
 ```kotlin
-txtReadMore.actionListener(object : TextViewReadMoreCallback {
-    override fun onExpand() {
-      // TODO ACTION
-    }
-    override fun onCollapse() {
-      // TODO ACTION
-    }
-})
+txtReadMore.toggleListener {
+    // TODO ACTION
+}
 ```
-#### With recyclerview trick
-Set your recyclerview cache size to optimize textview behavior
+#### With recyclerview
+* Use collapse function to onBindViewHolder
 ```java
-recyclerview.setItemViewCacheSize(list.size())
+holder.text.collapsed(item.isCollapsed());
+```
+* Use Toggle
+```java
+holder.text.onClickExpand(v -> holder.text.toggle());
+holder.text.onClickCollapse(v -> holder.text.toggle());
+holder.text.toggleListener(collapsed -> {
+    item.setCollapsed(collapsed);
+    notifyItemChanged(position);
+});
+```
+* Use Collapse Properties
+```java
+// onClickExpand or onClickCollapse 
+holder.text.onClickExpand(v -> {
+    boolean status = !item.isCollapsed();
+    holder.text.collapsed(status);
+    item.setCollapsed(status);
+    update(position);
+});
 ```
 
 #### Information
