@@ -9,7 +9,7 @@ maven { url 'https://jitpack.io' }
 
 #### dependencies
 ```kotlin
-implementation 'com.github.eriffanani:TextViewReadMore:1.5.2'
+implementation 'com.github.eriffanani:TextViewReadMore:2.0.0'
 ```
 
 ## How To Use
@@ -18,7 +18,7 @@ implementation 'com.github.eriffanani:TextViewReadMore:1.5.2'
 <com.erif.readmoretextview.TextViewReadMore
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:readMoreMaxLines="3"
+    app:readMoreMaxLines="3" (Default 1)
     android:text="YOUR TEXT HERE"/>
 ```
 ![basic](https://user-images.githubusercontent.com/26743731/167334745-3915b937-a0b4-4524-a0b4-47b165143ec7.png)
@@ -27,25 +27,24 @@ implementation 'com.github.eriffanani:TextViewReadMore:1.5.2'
 * Expand
 ```xml
 <com.erif.readmoretextview.TextViewReadMore
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    app:readMoreMaxLines="3"
-    app:expandText="Open Text"
-    app:expandTextColor="@color/teal_200"
-    app:expandTextStyle="bold|italic"
-    app:expandTextUnderline="true"
+    app:readMoreMaxLines="3" (Default 1)
+    app:expandText="Open Text" (Default "Read More")
+    app:expandTextColor="@color/teal_200" (Default Color.BLUE)
+    app:expandTextStyle="bold|italic" (Default normal)
+    app:expandTextUnderline="true" (Default false)
     android:text="YOUR TEXT HERE"/>
 ```
+![styling](https://user-images.githubusercontent.com/26743731/167335646-86eb9860-b40e-4281-be49-644993cd49e1.png)
+
 * Collapse
 ```xml
 <com.erif.readmoretextview.TextViewReadMore
-    app:collapseText="Close"
-    app:collapseTextColor="@color/teal_200"
-    app:collapseTextStyle="bold|italic"
-    app:collapseTextUnderline="true"
-    app:collapsed="false"/>
+    app:collapseText="Close Text" (Default "Close")
+    app:collapseTextColor="@color/teal_200" (Default Color.BLUE)
+    app:collapseTextStyle="bold|italic" (Default normal)
+    app:collapseTextUnderline="true" (Default false)
+    app:collapsed="false" (Default true)/>
 ```
-![styling](https://user-images.githubusercontent.com/26743731/167335646-86eb9860-b40e-4281-be49-644993cd49e1.png)
 
 ## Result
 <img src="https://user-images.githubusercontent.com/26743731/167337556-b46de2b5-9115-4d4e-ba48-7d48adbd018d.gif" width="400"/> <img src="https://user-images.githubusercontent.com/26743731/167338135-9d819401-aa26-4a20-ab83-9e9cc6b3886f.gif" width="400"/>
@@ -53,20 +52,21 @@ implementation 'com.github.eriffanani:TextViewReadMore:1.5.2'
 * Animation Duration
 ```xml
 <com.erif.readmoretextview.TextViewReadMore
-    android:animationDuration="1000"/>
+    android:animationDuration="500" (Default 200)/>
 ```
 
 ### Action
 ```xml
 <com.erif.readmoretextview.TextViewReadMore
-    app:actionClickColor="@color/colorRed"/>
+    app:actionClickColor="@color/colorRed" (Default @color/text_view_read_more_button_hover_color)/>
 ```
 ```java
+TextViewReadMore txtReadMore = findViewById(R.id.txtReadMore);
 txtReadMore.onClickExpand(v -> txtReadMore.toggle());
 txtReadMore.onClickCollapse(v -> txtReadMore.toggle());
 ```
 
-### Callback
+### Listener
 * Java
 ```Java
 txtReadMore.toggleListener(collapsed -> {
@@ -100,7 +100,7 @@ holder.text.onClickExpand(v -> {
     boolean status = !item.isCollapsed();
     holder.text.collapsed(status);
     item.setCollapsed(status);
-    update(position);
+    notifyItemChanged(position);
 });
 ```
 
