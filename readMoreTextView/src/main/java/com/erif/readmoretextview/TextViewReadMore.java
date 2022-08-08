@@ -8,9 +8,11 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.StaticLayout;
@@ -51,7 +53,7 @@ public class TextViewReadMore extends AppCompatTextView {
     private boolean collapsed;
     private boolean rebuild = true;
     private int lineWidth = 0;
-    private int maxLines = 2;
+    private int maxLines = 1;
 
     private int halfHeight = 0;
     private int fullHeight = 0;
@@ -92,8 +94,8 @@ public class TextViewReadMore extends AppCompatTextView {
             );
             try {
                 text = typedArray.getString(R.styleable.TextViewReadMore_android_text);
-                int getMaxLines = typedArray.getInt(R.styleable.TextViewReadMore_readMoreMaxLines, 2);
-                maxLines = Math.max(getMaxLines, 1);
+                int getMaxLines = typedArray.getInt(R.styleable.TextViewReadMore_readMoreMaxLines, maxLines);
+                maxLines = Math.max(getMaxLines, maxLines);
                 collapsed = typedArray.getBoolean(R.styleable.TextViewReadMore_collapsed, true);
 
                 String getExpandText = typedArray.getString(R.styleable.TextViewReadMore_expandText);
@@ -112,9 +114,7 @@ public class TextViewReadMore extends AppCompatTextView {
                 actionClickColor = typedArray.getColor(R.styleable.TextViewReadMore_actionClickColor, defaultActionClickColor);
 
                 int getAnimationDuration = typedArray.getInt(R.styleable.TextViewReadMore_android_animationDuration, animationDuration);
-                if (getAnimationDuration > 1000) {
-                    animationDuration = 1000;
-                } else animationDuration = Math.max(getAnimationDuration, 100);
+                animationDuration = Math.max(getAnimationDuration, 100);
             } finally {
                 typedArray.recycle();
             }
@@ -154,18 +154,6 @@ public class TextViewReadMore extends AppCompatTextView {
         if (!TextUtils.isEmpty(text)) {
             isEllipsized = isEllipsized(text);
             if (isEllipsized) {
-                String fullText = text+collapseText;
-                StaticLayout.Builder staticFull = StaticLayout.Builder
-                        .obtain(fullText, 0, fullText.length(), getPaint(), lineWidth)
-                        .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier());
-                fullHeight = staticFull.build().getHeight() + getCompoundPaddingTop() + getCompoundPaddingBottom();
-
-                StaticLayout.Builder staticHalf = StaticLayout.Builder
-                        .obtain(text, 0, text.length(), getPaint(), lineWidth)
-                        .setMaxLines(maxLines)
-                        .setEllipsize(TextUtils.TruncateAt.END)
-                        .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier());
-                halfHeight = staticHalf.build().getHeight() + getCompoundPaddingTop() + getCompoundPaddingBottom();
                 if (rebuild) {
                     if (collapsed) {
                         collapsedBuilder();
@@ -185,25 +173,35 @@ public class TextViewReadMore extends AppCompatTextView {
     }
 
     private boolean isEllipsized(String text) {
-        StaticLayout.Builder layout = StaticLayout.Builder
-                .obtain(text, 0, text.length(), getPaint(), lineWidth)
-                .setMaxLines(maxLines)
-                .setEllipsize(TextUtils.TruncateAt.END)
-                .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier());
-        int lines = maxLines - 1;
-        return layout.build().getEllipsisCount(lines) > 0;
+        StaticLayout layout;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            layout = StaticLayout.Builder
+                    .obtain(text, 0, text.length(), getPaint(), lineWidth)
+                    .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier())
+                    .build();
+        } else {
+            layout = new StaticLayout(text, getPaint(), lineWidth, Layout.Alignment.ALIGN_NORMAL,
+                    getLineSpacingMultiplier(), getLineSpacingExtra(), true
+            );
+        }
+        return layout.getLineCount() > maxLines;
     }
 
     private void collapsedBuilder() {
-        StaticLayout staticLayout = StaticLayout.Builder
-                .obtain(text, 0, text.length(), getPaint(), lineWidth)
-                .setMaxLines(maxLines)
-                .setEllipsize(TextUtils.TruncateAt.END)
-                .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier())
-                .build();
+        StaticLayout layout;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            layout = StaticLayout.Builder
+                    .obtain(text, 0, text.length(), getPaint(), lineWidth)
+                    .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier())
+                    .build();
+        } else {
+            layout = new StaticLayout(text, getPaint(), lineWidth, Layout.Alignment.ALIGN_NORMAL,
+                    getLineSpacingMultiplier(), getLineSpacingExtra(), true
+            );
+        }
         int sumOfLw = 0;
-        for (int i=0; i<staticLayout.getLineCount(); i++) {
-            int count = (int) staticLayout.getLineWidth(i);
+        for (int i=0; i<maxLines; i++) {
+            int count = (int) layout.getLineWidth(i);
             sumOfLw+=count;
         }
         float expandActionWidth = getPaint().measureText(expandText);
@@ -317,6 +315,44 @@ public class TextViewReadMore extends AppCompatTextView {
         }
         mLastClickTime = SystemClock.elapsedRealtime();
         setMovementMethod(null);
+
+        if (collapsed) {
+            String fullText = text+collapseText;
+            StaticLayout staticFull;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                staticFull = StaticLayout.Builder
+                        .obtain(fullText, 0, fullText.length(), getPaint(), lineWidth)
+                        .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier())
+                        .build();
+            } else {
+                staticFull = new StaticLayout(
+                        fullText, getPaint(), lineWidth, Layout.Alignment.ALIGN_NORMAL,
+                        getLineSpacingMultiplier(), getLineSpacingExtra(), true
+                );
+            }
+            fullHeight = staticFull.getHeight() + getCompoundPaddingTop() + getCompoundPaddingBottom();
+        } else {
+            StaticLayout staticHalf;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                staticHalf = StaticLayout.Builder
+                        .obtain(text, 0, text.length(), getPaint(), lineWidth)
+                        .setMaxLines(maxLines)
+                        .setEllipsize(TextUtils.TruncateAt.END)
+                        .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier())
+                        .build();
+            } else {
+                int maxLength = text.length();
+                do {
+                    staticHalf = new StaticLayout(
+                            ellipsize(text, maxLength), getPaint(), lineWidth, Layout.Alignment.ALIGN_NORMAL,
+                            getLineSpacingMultiplier(), getLineSpacingExtra(), true
+                    );
+                    maxLength -= 10;
+                } while (staticHalf.getLineCount() > 2);
+            }
+            halfHeight = staticHalf.getHeight() + getCompoundPaddingTop() + getCompoundPaddingBottom();
+        }
+
         int start = collapsed ? halfHeight : fullHeight;
         int end = collapsed ? fullHeight : halfHeight;
         ValueAnimator anim = ValueAnimator.ofInt(start, end);
@@ -375,6 +411,16 @@ public class TextViewReadMore extends AppCompatTextView {
     }
     public void onClickCollapse(View.OnClickListener onClickCollapse) {
         this.onClickCollapse = onClickCollapse;
+    }
+
+    private String ellipsize(String text, int size) {
+        if (text.isEmpty() || size <= 0) {
+            return "";
+        } else if (text.length() <= size) {
+            return text;
+        } else {
+            return text.substring(0, Math.max(size - 1, 0))+"...";
+        }
     }
 
     private void debug(String message) {

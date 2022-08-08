@@ -17,6 +17,9 @@ public class MainActivity extends AppCompatActivity {
         TextViewReadMore txtReadMore = findViewById(R.id.txtReadMore);
         txtReadMore.onClickExpand(v -> txtReadMore.toggle());
         txtReadMore.onClickCollapse(v -> txtReadMore.toggle());
+        txtReadMore.toggleListener(collapsed -> {
+
+        });
 
         findViewById(R.id.btnSet).setOnClickListener(v -> {
             String lorem = getResources().getString(R.string.lorem_ipsum);
