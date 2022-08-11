@@ -9,7 +9,7 @@ maven { url 'https://jitpack.io' }
 
 #### dependencies
 ```kotlin
-implementation 'com.github.eriffanani:TextViewReadMore:2.0.0'
+implementation 'com.github.eriffanani:TextViewReadMore:2.2.0'
 ```
 
 ## How To Use
@@ -49,12 +49,17 @@ implementation 'com.github.eriffanani:TextViewReadMore:2.0.0'
 ## Result
 <img src="https://user-images.githubusercontent.com/26743731/167337556-b46de2b5-9115-4d4e-ba48-7d48adbd018d.gif" width="400"/> <img src="https://user-images.githubusercontent.com/26743731/167338135-9d819401-aa26-4a20-ab83-9e9cc6b3886f.gif" width="400"/>
 
-* Animation Duration
+### Animation Duration
 ```xml
 <com.erif.readmoretextview.TextViewReadMore
     android:animationDuration="500" (Default 200)/>
 ```
 
+### Ellipsis Type
+```xml
+<com.erif.readmoretextview.TextViewReadMore
+    app:ellipsisType="none" (Default dots)/>
+```
 ### Action
 ```xml
 <com.erif.readmoretextview.TextViewReadMore
@@ -79,9 +84,13 @@ txtReadMore.toggleListener {
     // TODO ACTION
 }
 ```
-#### With recyclerview
+### With recyclerview
 * Use collapse function to onBindViewHolder
 ```java
+/** 
+    item.isCollapsed() is variable from your item to store and save state of 
+    textview (collapsed/expanded) when item displayed again from RecyclerView scroll 
+*/
 holder.text.collapsed(item.isCollapsed());
 ```
 * Use Toggle
