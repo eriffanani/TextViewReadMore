@@ -74,15 +74,11 @@ txtReadMore.onClickCollapse(v -> txtReadMore.toggle());
 ### Listener
 * Java
 ```Java
-txtReadMore.toggleListener(collapsed -> {
-    // TODO ACTION
-});
+txtReadMore.toggleListener(collapsed -> { // TODO ACTION });
 ```
 * Kotlin
 ```kotlin
-txtReadMore.toggleListener {
-    // TODO ACTION
-}
+txtReadMore.toggleListener { collapsed -> // TODO ACTION }
 ```
 ### With recyclerview
 * Use collapse function to onBindViewHolder
