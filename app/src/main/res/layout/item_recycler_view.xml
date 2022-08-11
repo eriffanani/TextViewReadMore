@@ -18,7 +18,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/lorem_ipsum1"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            app:readMoreMaxLines="3"
+            app:ellipsisType="none"/>
 
     </RelativeLayout>
 

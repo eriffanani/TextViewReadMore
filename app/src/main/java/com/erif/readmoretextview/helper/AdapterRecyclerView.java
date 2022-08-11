@@ -32,14 +32,14 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewH
             ModelItemRecyclerView item = list.get(position);
             mHolder.text.setText(item.getText());
             mHolder.text.collapsed(item.isCollapsed());
-            /*mHolder.text.onClickExpand(v -> mHolder.text.toggle());
+            mHolder.text.onClickExpand(v -> mHolder.text.toggle());
             mHolder.text.onClickCollapse(v -> mHolder.text.toggle());
 
             mHolder.text.toggleListener(collapsed -> {
                 item.setCollapsed(collapsed);
                 update(position);
-            });*/
-            mHolder.text.onClickExpand(v -> {
+            });
+            /*mHolder.text.onClickExpand(v -> {
                 boolean status = !item.isCollapsed();
                 mHolder.text.collapsed(status);
                 item.setCollapsed(status);
@@ -51,7 +51,7 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewH
                 mHolder.text.collapsed(status);
                 item.setCollapsed(status);
                 update(position);
-            });
+            });*/
 
         }
     }

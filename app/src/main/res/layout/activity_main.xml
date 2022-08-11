@@ -11,8 +11,9 @@
         android:id="@+id/txtReadMore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="12dp"
-        app:readMoreMaxLines="2"
+        android:background="#e3e3e3"
+        android:padding="10dp"
+        app:readMoreMaxLines="3"
         app:expandText="@string/read_more"
         app:expandTextStyle="bold|italic"
         app:expandTextColor="@color/teal_700"
@@ -23,7 +24,7 @@
         app:collapseTextColor="@color/teal_700"
         app:collapseTextUnderline="true"
         app:actionClickColor="@color/teal_200"
-        android:text="@string/lorem_ngawur_wur" />
+        android:text="@string/lorem_ngawur2"/>
 
     <Button
         android:id="@+id/btnSet"

@@ -37,6 +37,11 @@ public class TextViewReadMore extends AppCompatTextView {
 
     private static final String DEFAULT_EXPAND_TEXT = "Read More";
     private static final String DEFAULT_COLLAPSE_TEXT = "Close";
+    private static final String DOTS_CODE = "\u2026";
+    private static final String SPACE_CODE = "\u00A0";
+
+    private static final int ELLIPSIS_TYPE_DOTS = 0;
+    private static final int ELLIPSIS_TYPE_NONE = 1;
 
     private String text;
 
@@ -68,6 +73,7 @@ public class TextViewReadMore extends AppCompatTextView {
     private View.OnClickListener onClickExpand;
     private View.OnClickListener onClickCollapse;
     private int actionClickColor = 0;
+    private int ellipsisType = ELLIPSIS_TYPE_DOTS;
 
     private static long mLastClickTime = 0;
 
@@ -110,11 +116,15 @@ public class TextViewReadMore extends AppCompatTextView {
                 collapseTextStyle = typedArray.getInt(R.styleable.TextViewReadMore_collapseTextStyle, 0);
                 collapseTextUnderline = typedArray.getBoolean(R.styleable.TextViewReadMore_collapseTextUnderline, collapseTextUnderline);
 
+
                 int defaultActionClickColor = ContextCompat.getColor(context, R.color.text_view_read_more_button_hover_color);
                 actionClickColor = typedArray.getColor(R.styleable.TextViewReadMore_actionClickColor, defaultActionClickColor);
 
                 int getAnimationDuration = typedArray.getInt(R.styleable.TextViewReadMore_android_animationDuration, animationDuration);
                 animationDuration = Math.max(getAnimationDuration, 100);
+
+                ellipsisType = typedArray.getInt(R.styleable.TextViewReadMore_ellipsisType, ELLIPSIS_TYPE_DOTS);
+
             } finally {
                 typedArray.recycle();
             }
@@ -161,13 +171,13 @@ public class TextViewReadMore extends AppCompatTextView {
                     } else {
                         expandBuilder();
                         setText(spanExpanded);
-                        ViewGroup.LayoutParams params = getLayoutParams();
-                        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                        setLayoutParams(params);
+                        setWrapLayout();
                     }
                     setMovementMethod(LinkMovementMethod.getInstance());
                     rebuild = false;
                 }
+            } else {
+                setWrapLayout();
             }
         }
     }
@@ -189,29 +199,51 @@ public class TextViewReadMore extends AppCompatTextView {
 
     private void collapsedBuilder() {
         StaticLayout layout;
+        String replaceSpace = textReplaceSpace();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             layout = StaticLayout.Builder
-                    .obtain(text, 0, text.length(), getPaint(), lineWidth)
+                    .obtain(replaceSpace, 0, replaceSpace.length(), getPaint(), lineWidth)
                     .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier())
                     .build();
         } else {
-            layout = new StaticLayout(text, getPaint(), lineWidth, Layout.Alignment.ALIGN_NORMAL,
+            layout = new StaticLayout(replaceSpace, getPaint(), lineWidth, Layout.Alignment.ALIGN_NORMAL,
                     getLineSpacingMultiplier(), getLineSpacingExtra(), true
             );
         }
-        int sumOfLw = 0;
+        int sumLineWidth = 0;
+        CharSequence lastLineLetter = null;
+        int lastLineLetterCount = 0;
         for (int i=0; i<maxLines; i++) {
             int count = (int) layout.getLineWidth(i);
-            sumOfLw+=count;
+            int start = layout.getLineStart(i);
+            int end = layout.getLineEnd(i);
+            lastLineLetter = replaceSpace.subSequence(start, end);
+            lastLineLetterCount = lastLineLetter.length();
+            sumLineWidth+=count;
         }
-        float expandActionWidth = getPaint().measureText(expandText);
+        float expandActionWidth = getPaint().measureText(" "+expandText);
         float doubleExpandWith = expandActionWidth * 2;
-        float truncatedTextWidth = sumOfLw - expandActionWidth;
-        if (sumOfLw < doubleExpandWith) {
-            truncatedTextWidth = sumOfLw;
+
+        if (lastLineLetterCount < 3) {
+            if (lastLineLetter != null) {
+                String lastChar = lastLineLetter.toString().replaceAll("\n", "");
+                float lastLineLetterAdd = getPaint().measureText(lastChar);
+                sumLineWidth+=lastLineLetterAdd;
+            }
         }
-        CharSequence truncatedText = TextUtils.ellipsize(text, getPaint(), truncatedTextWidth, TextUtils.TruncateAt.END);
-        spanCollapsed = spanCollapsed(truncatedText+expandText);
+
+        float truncatedTextWidth = sumLineWidth - expandActionWidth;
+        if (sumLineWidth < doubleExpandWith) {
+            truncatedTextWidth = sumLineWidth;
+        }
+        CharSequence truncatedText = TextUtils.ellipsize(replaceSpace, getPaint(), truncatedTextWidth, TextUtils.TruncateAt.END);
+        String exp = expandText.replaceAll(" ", SPACE_CODE);
+        String finalText = truncatedText.toString();
+        if (ellipsisType == ELLIPSIS_TYPE_NONE) {
+            finalText = truncatedText.toString().replace(DOTS_CODE, "");
+        }
+
+        spanCollapsed = spanCollapsed(finalText+SPACE_CODE+exp);
     }
 
     private SpannableStringBuilder spanCollapsed(String text) {
@@ -260,7 +292,9 @@ public class TextViewReadMore extends AppCompatTextView {
     }
 
     private void expandBuilder() {
-        String fullText = text+collapseText;
+        String replaceSpace = textReplaceSpace();
+        String collapsedTextSpace = collapseText.replaceAll(" ", SPACE_CODE);
+        String fullText = replaceSpace+SPACE_CODE+collapsedTextSpace;
         spanExpanded = spanExpanded(fullText);
     }
 
@@ -317,7 +351,8 @@ public class TextViewReadMore extends AppCompatTextView {
         setMovementMethod(null);
 
         if (collapsed) {
-            String fullText = text+collapseText;
+            String collapsedTextSpace = collapseText.replaceAll(" ", SPACE_CODE);
+            String fullText = textReplaceSpace()+SPACE_CODE+collapsedTextSpace;
             StaticLayout staticFull;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 staticFull = StaticLayout.Builder
@@ -335,7 +370,7 @@ public class TextViewReadMore extends AppCompatTextView {
             StaticLayout staticHalf;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 staticHalf = StaticLayout.Builder
-                        .obtain(text, 0, text.length(), getPaint(), lineWidth)
+                        .obtain(textReplaceSpace(), 0, textReplaceSpace().length(), getPaint(), lineWidth)
                         .setMaxLines(maxLines)
                         .setEllipsize(TextUtils.TruncateAt.END)
                         .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier())
@@ -353,7 +388,8 @@ public class TextViewReadMore extends AppCompatTextView {
             halfHeight = staticHalf.getHeight() + getCompoundPaddingTop() + getCompoundPaddingBottom();
         }
 
-        int start = collapsed ? halfHeight : fullHeight;
+        //int start = collapsed ? halfHeight : fullHeight;
+        int start = getHeight();
         int end = collapsed ? fullHeight : halfHeight;
         ValueAnimator anim = ValueAnimator.ofInt(start, end);
         anim.setDuration(animationDuration);
@@ -367,8 +403,10 @@ public class TextViewReadMore extends AppCompatTextView {
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
                 isAnimate = true;
-                if (collapsed)
-                    setText(text, BufferType.SPANNABLE);
+                if (collapsed) {
+                    String replaceSpace = textReplaceSpace();
+                    setText(replaceSpace, BufferType.SPANNABLE);
+                }
             }
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -429,6 +467,16 @@ public class TextViewReadMore extends AppCompatTextView {
 
     public interface ToggleListener {
         public void onToggle(boolean collapsed);
+    }
+
+    private String textReplaceSpace() {
+        return text.replaceAll(" ", SPACE_CODE);
+    }
+
+    private void setWrapLayout() {
+        ViewGroup.LayoutParams params = getLayoutParams();
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        setLayoutParams(params);
     }
 
 }

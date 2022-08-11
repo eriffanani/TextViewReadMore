@@ -23,6 +23,10 @@
         </attr>
         <attr name="android:animationDuration"/>
         <attr name="actionClickColor" format="reference|color"/>
+        <attr name="ellipsisType">
+            <flag name="dots" value="0"/>
+            <flag name="none" value="1"/>
+        </attr>
     </declare-styleable>
 
 </resources>
