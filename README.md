@@ -9,7 +9,7 @@ maven { url 'https://jitpack.io' }
 
 #### dependencies
 ```kotlin
-implementation 'com.github.eriffanani:TextViewReadMore:2.2.0'
+implementation 'com.github.eriffanani:TextViewReadMore:2.5.0'
 ```
 
 ## How To Use
