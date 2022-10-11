@@ -24,7 +24,6 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -137,6 +136,10 @@ public class TextViewReadMore extends AppCompatTextView {
         rebuild = true;
     }
 
+    public boolean isCollapsed() {
+        return this.collapsed;
+    }
+
     @Override
     public void setText(CharSequence text, BufferType type) {
         if (isAnimate) {
@@ -199,14 +202,14 @@ public class TextViewReadMore extends AppCompatTextView {
 
     private void collapsedBuilder() {
         StaticLayout layout;
-        String replaceSpace = textReplaceSpace();
+        //String replaceSpace = textReplaceSpace();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             layout = StaticLayout.Builder
-                    .obtain(replaceSpace, 0, replaceSpace.length(), getPaint(), lineWidth)
+                    .obtain(text, 0, text.length(), getPaint(), lineWidth)
                     .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier())
                     .build();
         } else {
-            layout = new StaticLayout(replaceSpace, getPaint(), lineWidth, Layout.Alignment.ALIGN_NORMAL,
+            layout = new StaticLayout(text, getPaint(), lineWidth, Layout.Alignment.ALIGN_NORMAL,
                     getLineSpacingMultiplier(), getLineSpacingExtra(), true
             );
         }
@@ -217,7 +220,7 @@ public class TextViewReadMore extends AppCompatTextView {
             int count = (int) layout.getLineWidth(i);
             int start = layout.getLineStart(i);
             int end = layout.getLineEnd(i);
-            lastLineLetter = replaceSpace.subSequence(start, end);
+            lastLineLetter = text.subSequence(start, end);
             lastLineLetterCount = lastLineLetter.length();
             sumLineWidth+=count;
         }
@@ -236,7 +239,7 @@ public class TextViewReadMore extends AppCompatTextView {
         if (sumLineWidth < doubleExpandWith) {
             truncatedTextWidth = sumLineWidth;
         }
-        CharSequence truncatedText = TextUtils.ellipsize(replaceSpace, getPaint(), truncatedTextWidth, TextUtils.TruncateAt.END);
+        CharSequence truncatedText = TextUtils.ellipsize(text, getPaint(), truncatedTextWidth, TextUtils.TruncateAt.END);
         String exp = expandText.replaceAll(" ", SPACE_CODE);
         String finalText = truncatedText.toString();
         if (ellipsisType == ELLIPSIS_TYPE_NONE) {
@@ -292,9 +295,9 @@ public class TextViewReadMore extends AppCompatTextView {
     }
 
     private void expandBuilder() {
-        String replaceSpace = textReplaceSpace();
+        //String replaceSpace = textReplaceSpace();
         String collapsedTextSpace = collapseText.replaceAll(" ", SPACE_CODE);
-        String fullText = replaceSpace+SPACE_CODE+collapsedTextSpace;
+        String fullText = text+SPACE_CODE+collapsedTextSpace;
         spanExpanded = spanExpanded(fullText);
     }
 
@@ -352,50 +355,51 @@ public class TextViewReadMore extends AppCompatTextView {
 
         if (collapsed) {
             String collapsedTextSpace = collapseText.replaceAll(" ", SPACE_CODE);
-            String fullText = textReplaceSpace()+SPACE_CODE+collapsedTextSpace;
+            String fullText = text+SPACE_CODE+collapsedTextSpace;
+
             StaticLayout staticFull;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 staticFull = StaticLayout.Builder
                         .obtain(fullText, 0, fullText.length(), getPaint(), lineWidth)
                         .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier())
+                        .setIncludePad(getIncludeFontPadding())
                         .build();
             } else {
                 staticFull = new StaticLayout(
                         fullText, getPaint(), lineWidth, Layout.Alignment.ALIGN_NORMAL,
-                        getLineSpacingMultiplier(), getLineSpacingExtra(), true
+                        getLineSpacingMultiplier(), getLineSpacingExtra(), getIncludeFontPadding()
                 );
             }
-            fullHeight = staticFull.getHeight() + getCompoundPaddingTop() + getCompoundPaddingBottom();
+            fullHeight = staticFull.getHeight() + getPaddingTop() + getPaddingBottom();
         } else {
             StaticLayout staticHalf;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 staticHalf = StaticLayout.Builder
-                        .obtain(textReplaceSpace(), 0, textReplaceSpace().length(), getPaint(), lineWidth)
+                        .obtain(text, 0, text.length(), getPaint(), lineWidth)
                         .setMaxLines(maxLines)
                         .setEllipsize(TextUtils.TruncateAt.END)
                         .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier())
+                        .setIncludePad(getIncludeFontPadding())
                         .build();
             } else {
                 int maxLength = text.length();
                 do {
                     staticHalf = new StaticLayout(
                             ellipsize(text, maxLength), getPaint(), lineWidth, Layout.Alignment.ALIGN_NORMAL,
-                            getLineSpacingMultiplier(), getLineSpacingExtra(), true
+                            getLineSpacingMultiplier(), getLineSpacingExtra(), getIncludeFontPadding()
                     );
                     maxLength -= 10;
                 } while (staticHalf.getLineCount() > 2);
             }
-            halfHeight = staticHalf.getHeight() + getCompoundPaddingTop() + getCompoundPaddingBottom();
+            halfHeight = staticHalf.getHeight() + getPaddingTop() + getPaddingTop();
         }
-
-        //int start = collapsed ? halfHeight : fullHeight;
-        int start = getHeight();
         int end = collapsed ? fullHeight : halfHeight;
-        ValueAnimator anim = ValueAnimator.ofInt(start, end);
+        ValueAnimator anim = ValueAnimator.ofInt(getHeight(), end);
         anim.setDuration(animationDuration);
         ViewGroup.LayoutParams params = getLayoutParams();
         anim.addUpdateListener(animation -> {
-            params.height = (int) animation.getAnimatedValue();
+            Object value = animation.getAnimatedValue();
+            params.height = (int) value;
             setLayoutParams(params);
         });
         anim.addListener(new AnimatorListenerAdapter() {
@@ -404,8 +408,7 @@ public class TextViewReadMore extends AppCompatTextView {
                 super.onAnimationStart(animation);
                 isAnimate = true;
                 if (collapsed) {
-                    String replaceSpace = textReplaceSpace();
-                    setText(replaceSpace, BufferType.SPANNABLE);
+                    setText(text, BufferType.SPANNABLE);
                 }
             }
             @Override
@@ -461,17 +464,14 @@ public class TextViewReadMore extends AppCompatTextView {
         }
     }
 
+    /* Unused function
     private void debug(String message) {
         Log.d("TextViewReadMore", message);
     }
-
-    public interface ToggleListener {
-        public void onToggle(boolean collapsed);
-    }
-
     private String textReplaceSpace() {
         return text.replaceAll(" ", SPACE_CODE);
     }
+    */
 
     private void setWrapLayout() {
         ViewGroup.LayoutParams params = getLayoutParams();

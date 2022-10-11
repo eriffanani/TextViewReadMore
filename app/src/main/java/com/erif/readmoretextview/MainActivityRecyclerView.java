@@ -39,7 +39,7 @@ public class MainActivityRecyclerView extends AppCompatActivity {
                 getString(R.string.lorem_ngawur_kabeh2),
                 getString(R.string.lorem_ipsum1),
                 getString(R.string.lorem_ipsum2),
-                getString(R.string.lorem_ipsum3),
+                "a",
                 getString(R.string.lorem_ipsum1),
                 getString(R.string.lorem_ipsum2),
                 getString(R.string.lorem_ipsum3),
