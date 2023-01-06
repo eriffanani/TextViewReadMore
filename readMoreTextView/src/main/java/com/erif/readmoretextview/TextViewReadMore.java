@@ -148,7 +148,11 @@ public class TextViewReadMore extends AppCompatTextView {
             if (text instanceof Spanned) {
                 rebuild = false;
             } else {
-                this.text = text.toString();
+                if (text != null) {
+                    this.text = text.toString();
+                } else {
+                    this.text = null;
+                }
                 rebuild = true;
             }
         }
