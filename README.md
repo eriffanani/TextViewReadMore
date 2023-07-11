@@ -2,7 +2,7 @@
 Make your long textview setup easily and quickly
 
 ## Installation
-#### setting.gradle
+#### settings.gradle
 ```kotlin
 dependencyResolutionManagement {
     repositories {
@@ -11,9 +11,11 @@ dependencyResolutionManagement {
 }
 ```
 
-#### dependencies
+#### build.gradle(app)
 ```kotlin
-implementation 'com.github.eriffanani:TextViewReadMore:3.0.0'
+dependencies {
+    implementation 'com.github.eriffanani:TextViewReadMore:3.0.0'
+}
 ```
 
 ## How To Use
