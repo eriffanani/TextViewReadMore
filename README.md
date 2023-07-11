@@ -2,9 +2,13 @@
 Make your long textview setup easily and quickly
 
 ## Installation
-#### repositories
+#### setting.gradle
 ```kotlin
-maven { url 'https://jitpack.io' }
+dependencyResolutionManagement {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
 ```
 
 #### dependencies
