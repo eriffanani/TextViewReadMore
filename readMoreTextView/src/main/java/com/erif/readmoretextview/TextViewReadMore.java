@@ -6,6 +6,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -24,6 +25,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -65,9 +67,6 @@ public class TextViewReadMore extends AppCompatTextView {
     private boolean isEllipsized = false;
     private int animationDuration = 200;
     private ToggleListener toggleListener;
-
-    private SpannableStringBuilder spanCollapsed;
-    private SpannableStringBuilder spanExpanded;
 
     private View.OnClickListener onClickExpand;
     private View.OnClickListener onClickCollapse;
@@ -114,7 +113,6 @@ public class TextViewReadMore extends AppCompatTextView {
                 collapseTextColor = typedArray.getColor(R.styleable.TextViewReadMore_collapseTextColor, Color.BLUE);
                 collapseTextStyle = typedArray.getInt(R.styleable.TextViewReadMore_collapseTextStyle, 0);
                 collapseTextUnderline = typedArray.getBoolean(R.styleable.TextViewReadMore_collapseTextUnderline, collapseTextUnderline);
-
 
                 int defaultActionClickColor = ContextCompat.getColor(context, R.color.text_view_read_more_button_hover_color);
                 actionClickColor = typedArray.getColor(R.styleable.TextViewReadMore_actionClickColor, defaultActionClickColor);
@@ -163,97 +161,88 @@ public class TextViewReadMore extends AppCompatTextView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int givenWidth = MeasureSpec.getSize(widthMeasureSpec);
         lineWidth = givenWidth - getCompoundPaddingStart() - getCompoundPaddingEnd();
-        buildSpan();
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (rebuild)
+            buildSpan();
+    }
+
     private void buildSpan() {
+        debug("mHeight("+getHeight()+") "+text);
         if (!TextUtils.isEmpty(text)) {
             isEllipsized = isEllipsized(text);
             if (isEllipsized) {
                 if (rebuild) {
                     if (collapsed) {
-                        collapsedBuilder();
-                        setText(spanCollapsed);
+                        StaticLayout layoutDefault = getStaticLayoutCollapsed(text);
+                        int sumLineWidth = 0;
+                        CharSequence lastLineLetter = null;
+                        int lastLineLetterCount = 0;
+                        for (int i = 0; i < maxLines; i++) {
+                            int count = (int) layoutDefault.getLineWidth(i);
+                            int start = layoutDefault.getLineStart(i);
+                            int end = layoutDefault.getLineEnd(i);
+                            lastLineLetter = text.subSequence(start, end);
+                            lastLineLetterCount = lastLineLetter.length();
+                            sumLineWidth += count;
+                        }
+                        float expandActionWidth = getPaint().measureText(" " + expandText);
+                        float doubleExpandWith = expandActionWidth * 2;
+
+                        if (lastLineLetterCount < 3) {
+                            if (lastLineLetter != null) {
+                                String lastChar = lastLineLetter.toString().replaceAll("\n", "");
+                                float lastLineLetterAdd = getPaint().measureText(lastChar);
+                                sumLineWidth += lastLineLetterAdd;
+                            }
+                        }
+
+                        float truncatedTextWidth = sumLineWidth - expandActionWidth;
+                        if (sumLineWidth < doubleExpandWith) {
+                            truncatedTextWidth = sumLineWidth;
+                        }
+                        CharSequence truncatedText = TextUtils.ellipsize(text, getPaint(), truncatedTextWidth, TextUtils.TruncateAt.END);
+                        String exp = expandText.replaceAll(" ", SPACE_CODE);
+                        String finalText = truncatedText.toString();
+                        if (ellipsisType == ELLIPSIS_TYPE_NONE)
+                            finalText = truncatedText.toString().replace(DOTS_CODE, "");
+                        String collapsedText = finalText + SPACE_CODE + exp;
+                        StaticLayout layout = getStaticLayoutCollapsed(collapsedText);
+                        SpannableStringBuilder spanCollapsed = spanCollapsed(collapsedText);
+                        if (spanCollapsed != null) {
+                            updateParam(layout.getHeight());
+                            setText(spanCollapsed);
+                        }
                     } else {
-                        expandBuilder();
+                        String collapsedTextSpace = collapseText.replaceAll(" ", SPACE_CODE);
+                        String fullText = text + SPACE_CODE + collapsedTextSpace;
+                        SpannableStringBuilder spanExpanded = spanExpanded(fullText);
+                        StaticLayout layout = getStaticLayout(fullText);
                         setText(spanExpanded);
-                        setWrapLayout();
+                        updateParam(layout.getHeight());
                     }
                     setMovementMethod(LinkMovementMethod.getInstance());
                     rebuild = false;
                 }
             } else {
-                setWrapLayout();
+                StaticLayout layout = getStaticLayout(text);
+                updateParam(layout.getHeight());
             }
         }
     }
 
     private boolean isEllipsized(String text) {
-        StaticLayout layout;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            layout = StaticLayout.Builder
-                    .obtain(text, 0, text.length(), getPaint(), lineWidth)
-                    .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier())
-                    .build();
-        } else {
-            layout = new StaticLayout(text, getPaint(), lineWidth, Layout.Alignment.ALIGN_NORMAL,
-                    getLineSpacingMultiplier(), getLineSpacingExtra(), true
-            );
-        }
+        StaticLayout layout = getStaticLayout(text);
         return layout.getLineCount() > maxLines;
     }
 
-    private void collapsedBuilder() {
-        StaticLayout layout;
-        //String replaceSpace = textReplaceSpace();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            layout = StaticLayout.Builder
-                    .obtain(text, 0, text.length(), getPaint(), lineWidth)
-                    .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier())
-                    .build();
-        } else {
-            layout = new StaticLayout(text, getPaint(), lineWidth, Layout.Alignment.ALIGN_NORMAL,
-                    getLineSpacingMultiplier(), getLineSpacingExtra(), true
-            );
-        }
-        int sumLineWidth = 0;
-        CharSequence lastLineLetter = null;
-        int lastLineLetterCount = 0;
-        for (int i=0; i<maxLines; i++) {
-            int count = (int) layout.getLineWidth(i);
-            int start = layout.getLineStart(i);
-            int end = layout.getLineEnd(i);
-            lastLineLetter = text.subSequence(start, end);
-            lastLineLetterCount = lastLineLetter.length();
-            sumLineWidth+=count;
-        }
-        float expandActionWidth = getPaint().measureText(" "+expandText);
-        float doubleExpandWith = expandActionWidth * 2;
-
-        if (lastLineLetterCount < 3) {
-            if (lastLineLetter != null) {
-                String lastChar = lastLineLetter.toString().replaceAll("\n", "");
-                float lastLineLetterAdd = getPaint().measureText(lastChar);
-                sumLineWidth+=lastLineLetterAdd;
-            }
-        }
-
-        float truncatedTextWidth = sumLineWidth - expandActionWidth;
-        if (sumLineWidth < doubleExpandWith) {
-            truncatedTextWidth = sumLineWidth;
-        }
-        CharSequence truncatedText = TextUtils.ellipsize(text, getPaint(), truncatedTextWidth, TextUtils.TruncateAt.END);
-        String exp = expandText.replaceAll(" ", SPACE_CODE);
-        String finalText = truncatedText.toString();
-        if (ellipsisType == ELLIPSIS_TYPE_NONE) {
-            finalText = truncatedText.toString().replace(DOTS_CODE, "");
-        }
-
-        spanCollapsed = spanCollapsed(finalText+SPACE_CODE+exp);
-    }
-
     private SpannableStringBuilder spanCollapsed(String text) {
+        if (text == null)
+            return null;
         SpannableStringBuilder span = new SpannableStringBuilder(text);
         int start = text.length() - expandText.length();
         int end = text.length();
@@ -296,13 +285,6 @@ public class TextViewReadMore extends AppCompatTextView {
             }
         }, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         return span;
-    }
-
-    private void expandBuilder() {
-        //String replaceSpace = textReplaceSpace();
-        String collapsedTextSpace = collapseText.replaceAll(" ", SPACE_CODE);
-        String fullText = text+SPACE_CODE+collapsedTextSpace;
-        spanExpanded = spanExpanded(fullText);
     }
 
     private SpannableStringBuilder spanExpanded(String text) {
@@ -361,41 +343,11 @@ public class TextViewReadMore extends AppCompatTextView {
             String collapsedTextSpace = collapseText.replaceAll(" ", SPACE_CODE);
             String fullText = text+SPACE_CODE+collapsedTextSpace;
 
-            StaticLayout staticFull;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                staticFull = StaticLayout.Builder
-                        .obtain(fullText, 0, fullText.length(), getPaint(), lineWidth)
-                        .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier())
-                        .setIncludePad(getIncludeFontPadding())
-                        .build();
-            } else {
-                staticFull = new StaticLayout(
-                        fullText, getPaint(), lineWidth, Layout.Alignment.ALIGN_NORMAL,
-                        getLineSpacingMultiplier(), getLineSpacingExtra(), getIncludeFontPadding()
-                );
-            }
-            fullHeight = staticFull.getHeight() + getPaddingTop() + getPaddingBottom();
+            StaticLayout layoutFull = getStaticLayout(fullText);
+            fullHeight = layoutFull.getHeight() + getPaddingTop() + getPaddingBottom();
         } else {
-            StaticLayout staticHalf;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                staticHalf = StaticLayout.Builder
-                        .obtain(text, 0, text.length(), getPaint(), lineWidth)
-                        .setMaxLines(maxLines)
-                        .setEllipsize(TextUtils.TruncateAt.END)
-                        .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier())
-                        .setIncludePad(getIncludeFontPadding())
-                        .build();
-            } else {
-                int maxLength = text.length();
-                do {
-                    staticHalf = new StaticLayout(
-                            ellipsize(text, maxLength), getPaint(), lineWidth, Layout.Alignment.ALIGN_NORMAL,
-                            getLineSpacingMultiplier(), getLineSpacingExtra(), getIncludeFontPadding()
-                    );
-                    maxLength -= 10;
-                } while (staticHalf.getLineCount() > 2);
-            }
-            halfHeight = staticHalf.getHeight() + getPaddingTop() + getPaddingTop();
+            StaticLayout layoutCollapsed = getStaticLayoutCollapsed(text);
+            halfHeight = layoutCollapsed.getHeight() + getPaddingTop() + getPaddingTop();
         }
         int end = collapsed ? fullHeight : halfHeight;
         ValueAnimator anim = ValueAnimator.ofInt(getHeight(), end);
@@ -423,7 +375,7 @@ public class TextViewReadMore extends AppCompatTextView {
                 rebuild = true;
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
                     if (toggleListener != null) toggleListener.onToggle(collapsed);
-                }, 100);
+                }, 0);
             }
         });
         if (isEllipsized)
@@ -468,19 +420,64 @@ public class TextViewReadMore extends AppCompatTextView {
         }
     }
 
-    /* Unused function
+
     private void debug(String message) {
         Log.d("TextViewReadMore", message);
     }
+    /* Unused function
     private String textReplaceSpace() {
         return text.replaceAll(" ", SPACE_CODE);
     }
     */
 
-    private void setWrapLayout() {
+    private void updateParam(int height) {
         ViewGroup.LayoutParams params = getLayoutParams();
-        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        int paddings = getPaddingTop() + getPaddingBottom();
+        params.height = height + paddings;
         setLayoutParams(params);
+    }
+
+    private StaticLayout getStaticLayout(@Nullable String source) {
+        String mSource = source == null ? "" : source;
+        StaticLayout layout;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            layout = StaticLayout.Builder
+                    .obtain(mSource, 0, mSource.length(), getPaint(), lineWidth)
+                    .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier())
+                    .setIncludePad(getIncludeFontPadding())
+                    .setAlignment(Layout.Alignment.ALIGN_NORMAL)
+                    .build();
+        } else {
+            layout = new StaticLayout(mSource, getPaint(), lineWidth, Layout.Alignment.ALIGN_NORMAL,
+                    getLineSpacingMultiplier(), getLineSpacingExtra(), getIncludeFontPadding()
+            );
+        }
+        return layout;
+    }
+
+    private StaticLayout getStaticLayoutCollapsed(@Nullable String source) {
+        String mSource = source == null ? "" : source;
+        StaticLayout layout;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            layout = StaticLayout.Builder
+                    .obtain(mSource, 0, mSource.length(), getPaint(), lineWidth)
+                    .setMaxLines(maxLines)
+                    .setEllipsize(TextUtils.TruncateAt.END)
+                    .setLineSpacing(getLineSpacingExtra(), getLineSpacingMultiplier())
+                    .setIncludePad(getIncludeFontPadding())
+                    .setAlignment(Layout.Alignment.ALIGN_NORMAL)
+                    .build();
+        } else {
+            int maxLength = mSource.length();
+            do {
+                layout = new StaticLayout(
+                        ellipsize(mSource, maxLength), getPaint(), lineWidth, Layout.Alignment.ALIGN_NORMAL,
+                        getLineSpacingMultiplier(), getLineSpacingExtra(), getIncludeFontPadding()
+                );
+                maxLength -= 10;
+            } while (layout.getLineCount() > 2);
+        }
+        return layout;
     }
 
 }

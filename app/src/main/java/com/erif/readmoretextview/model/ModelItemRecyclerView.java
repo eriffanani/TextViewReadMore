@@ -1,15 +1,18 @@
-package com.erif.readmoretextview.helper;
+package com.erif.readmoretextview.model;
 
 public class ModelItemRecyclerView {
 
     private int id;
+    private int img;
+
     private String text;
     private boolean collapsed = true;
 
     public ModelItemRecyclerView() {}
 
-    public ModelItemRecyclerView(int id, String text) {
+    public ModelItemRecyclerView(int id, int img, String text) {
         this.id = id;
+        this.img = img;
         this.text = text;
     }
 
@@ -31,6 +34,14 @@ public class ModelItemRecyclerView {
 
     public boolean isCollapsed() {
         return collapsed;
+    }
+
+    public int getImg() {
+        return img;
+    }
+
+    public void setImg(int img) {
+        this.img = img;
     }
 
     public void setCollapsed(boolean collapsed) {

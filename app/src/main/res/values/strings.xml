@@ -1,22 +1,26 @@
 <resources>
     <string name="app_name">ReadMoreTextView</string>
 
-    <string name="lorem_ipsum">0Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the</string>
-    <string name="lorem_ipsum1">1Nunc at placerat massa Maecenas sodales rutrum est sed efficitur Nunc at Nunc at placerat massa Maecenas sodales
+    <string name="lorem_ipsum2">Long text 1 Lorem ipsum at placerat massa Maecenas sodales rutrum est sed efficitur Nunc at Nunc at placerat massa Maecenas sodales
         placerat massa. asdfasf Maecenas sodales rutrum est sed efficitur.</string>
-    <string name="lorem_ipsum_list">1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n
-        2. Maecenas sodales rutrum est sed efficitur.\n
-        3. Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n
-        4. Nunc at placerat massa.\n
-        5. Maecenas sodales rutrum est sed efficitur.\n
-        6. Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n
-        7. Nunc at placerat massa.
-    </string>
-    <string name="lorem_ipsum2">2Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+
+    <string name="lorem_ipsum1">Long text 2 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         Maecenas sodales rutrum est sed efficitur. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         Fusce eget ligula sed dolor accumsan tristique id vel turpis. Nam congue nunc hendrerit eros fermentum eleifend.
         Sed tristique facilisis imperdiet. Donec eget interdum dui.</string>
-    <string name="lorem_ipsum3">3Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris pretium mauris vel
+
+    <string name="lorem_ipsum3">Long text 3 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris pretium mauris vel
+        lacus vulputate, ac dictum velit tempus. Suspendisse potenti. Proin eget sem ullamcorper, faucibus orci vel,
+        facilisis sem. Nullam in metus at eros mattis malesuada. Vestibulum id justo sed ex interdum ultrices. Vestibulum
+        lobortis posuere felis, a dictum tortor. Etiam a gravida augue, at interdum lacus. Ut finibus metus orci, eget
+        lacinia turpis imperdiet et. Donec in sagittis erat. Aenean egestas vulputate nunc vel pulvinar. Pellentesque
+        habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Maecenas nec orci porta,
+        finibus quam ut, fringilla sapien. Maecenas tristique justo turpis, non pretium ligula sagittis luctus.
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum
+        scelerisque tristique hendrerit.
+    </string>
+
+    <string name="lorem_ipsum4">Long text 4 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris pretium mauris vel
         lacus vulputate, ac dictum velit tempus. Suspendisse potenti. Proin eget sem ullamcorper, faucibus orci vel,
         facilisis sem. Nullam in metus at eros mattis malesuada. Vestibulum id justo sed ex interdum ultrices. Vestibulum
         lobortis posuere felis, a dictum tortor. Etiam a gravida augue, at interdum lacus. Ut finibus metus orci, eget
@@ -31,9 +35,9 @@
         porttitor. Duis quis dignissim velit, non semper lorem. Phasellus pulvinar, mi vitae consectetur ullamcorper,
         odio nisi luctus dolor, et accumsan erat tellus quis enim. Etiam finibus tortor nec viverra mattis. Nullam
         vehicula, neque ac pretium gravida, magna libero placerat neque, et imperdiet velit turpis vestibulum sapien.
-            </string>
+    </string>
 
-    <string name="lorem_ipsum4">4Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris pretium mauris vel
+    <string name="lorem_ipsum5">Long text 5 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris pretium mauris vel
         lacus vulputate, ac dictum velit tempus. Suspendisse potenti. Proin eget sem ullamcorper, faucibus orci vel,
         facilisis sem. Nullam in metus at eros mattis malesuada. Vestibulum id justo sed ex interdum ultrices. Vestibulum
         lobortis posuere felis, a dictum tortor. Etiam a gravida augue, at interdum lacus. Ut finibus metus orci, eget
@@ -67,18 +71,25 @@
         maximus egestas risus. Aenean ut elit vel nulla gravida sagittis. Class aptent taciti sociosqu ad litora torquent
         per conubia nostra, per inceptos himenaeos.</string>
 
-    <string name="lorem_ngawur">Ngawur\nplacerat massa\nMaecenas sodales\n rutrum est sed\n efficitur Nunc at \nNunc at placerat massa Maecenas\n sodales
+    <string name="lorem_ipsum_list">1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n
+        2. Maecenas sodales rutrum est sed efficitur.\n
+        3. Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n
+        4. Nunc at placerat massa.\n
+        5. Maecenas sodales rutrum est sed efficitur.\n
+        6. Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n
+        7. Nunc at placerat massa.
+    </string>
+
+    <string name="lorem_short">Short text Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Maecenas sodales rutrum est sed efficitur. Lorem ipsum dolor sit amet.</string>
+
+    <string name="lorem_entered">This is\nentered\ntext example\nlorem ipsum\ndolor sit amet. \nNunc at placerat massa Maecenas\nsodales
         placerat massa. asdfasf Maecenas \nsodales rutrum \nest sed efficitur.</string>
 
-    <string name="lorem_ngawur2">ejej\ndee\nd\nd\nf\nf\nd\nd</string>
+    <string name="lorem_short_entered">ejej\ndee\nd\nd\nf\nf\nd\nd</string>
 
-    <string name="lorem_ngawur_wur">2Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        Maecenas sodales rutrum est sed efficitur. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        Fusce eget ligula sed dolor accumsan tristique id vel turpis.\nNam congue nunc hendrerit eros fermentum eleifend.
-        Sed tristique facilisis imperdiet. Donec eget interdum dui. Sed tristique facilisis imperdiet. Donec cavd asdf</string>
-
-    <string name="lorem_ngawur_kabeh">1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111S11111111111111111111111111111111111111111111111111111111111111E</string>
-    <string name="lorem_ngawur_kabeh2">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXBukaDong</string>
+    <string name="lorem_no_space">1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111S11111111111111111111111111111111111111111111111111111111111111E</string>
+    <string name="lorem_no_space_random">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXBukaDong</string>
 
     <string name="read_more">Read More</string>
     <string name="read_less">Read Less</string>

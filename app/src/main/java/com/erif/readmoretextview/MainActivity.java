@@ -2,55 +2,117 @@ package com.erif.readmoretextview;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
+
+import com.erif.readmoretextview.adapter.AdapterRecyclerView;
+import com.erif.readmoretextview.model.ModelItemRecyclerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private int i = -1;
+    private CoordinatorLayout parentView;
+    private Toolbar toolbar;
+    private RecyclerView recyclerView;
+    private AdapterRecyclerView adapter;
+    private final List<ModelItemRecyclerView> list = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(R.layout.activity_main);
-        TextViewReadMore txtReadMore = findViewById(R.id.txtReadMore);
-        txtReadMore.onClickExpand(v -> txtReadMore.toggle());
-        txtReadMore.onClickCollapse(v -> txtReadMore.toggle());
-        txtReadMore.toggleListener(collapsed -> debug("Collapsed: "+collapsed));
+        parentView = findViewById(R.id.act_main_parentView);
+        toolbar = findViewById(R.id.act_main_toolbar);
+        setSupportActionBar(toolbar);
+        adapter = new AdapterRecyclerView();
 
-        findViewById(R.id.btnSet).setOnClickListener(v -> {
-            String lorem = getResources().getString(R.string.lorem_ipsum);
-            String lorem1 = getResources().getString(R.string.lorem_ipsum1);
-            String lorem2 = getResources().getString(R.string.lorem_ipsum2);
-            String lorem3 = getResources().getString(R.string.lorem_ipsum3);
-            String lorem4 = getResources().getString(R.string.lorem_ipsum4);
-            if (i < 4)
-                i+=1;
-            else
-                i=0;
-            if (i == 0) {
-                txtReadMore.setText(lorem);
-            } else if (i == 1) {
-                txtReadMore.setText(lorem1);
-            } else if (i == 2) {
-                txtReadMore.setText(lorem2);
-            } else if (i == 3) {
-                txtReadMore.setText(lorem3);
-            } else if (i == 4) {
-                txtReadMore.setText(lorem4);
+        recyclerView = findViewById(R.id.act_main_recyclerView);
+
+        recyclerView.setAdapter(adapter);
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(manager);
+        SimpleItemAnimator animator = (SimpleItemAnimator) recyclerView.getItemAnimator();
+        if (animator != null)
+            animator.setSupportsChangeAnimations(false);
+
+        String[] arr = new String[] {
+                getString(R.string.lorem_ipsum1),
+                getString(R.string.lorem_short),
+                getString(R.string.lorem_ipsum2),
+                getString(R.string.lorem_ipsum3),
+                "Short text 1",
+                getString(R.string.lorem_ipsum4),
+                getString(R.string.lorem_ipsum1),
+                getString(R.string.lorem_ipsum2),
+                "Short text 2",
+                getString(R.string.lorem_ipsum1),
+                getString(R.string.lorem_ipsum2)
+        };
+
+        int [] img = new int[] {
+                R.mipmap.img1, R.mipmap.img3, R.mipmap.img2, R.mipmap.img5, R.mipmap.img4,
+                R.mipmap.img1, R.mipmap.img2, R.mipmap.img3, R.mipmap.img4, R.mipmap.img5,
+                R.mipmap.img2, R.mipmap.img1
+        };
+
+        for (int i=0; i<arr.length; i++) {
+            ModelItemRecyclerView item = new ModelItemRecyclerView(i, img[i], arr[i]);
+            if (i == 3) {
+                item.setCollapsed(false);
             }
-        });
+            list.add(item);
+        }
+        applyWindows();
+    }
 
-        findViewById(R.id.act_main_fab).setOnClickListener(v -> {
-            Intent intent = new Intent(this, MainActivityRecyclerView.class);
+    private void applyWindows() {
+        ViewCompat.setOnApplyWindowInsetsListener(parentView, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            int statusBarHeight = systemBars.top;
+            int navigationBarHeight = systemBars.bottom;
+            ViewGroup.MarginLayoutParams toolbarParam = (ViewGroup.MarginLayoutParams) toolbar.getLayoutParams();
+            toolbarParam.topMargin = statusBarHeight;
+            toolbar.post(() -> {
+                int toolbarHeight = toolbar.getHeight();
+                int recyclerViewPaddingTop = statusBarHeight + toolbarHeight;
+                recyclerView.setPadding(
+                        recyclerView.getPaddingStart(), recyclerViewPaddingTop,
+                        recyclerView.getPaddingEnd(), navigationBarHeight
+                );
+                adapter.setList(list);
+            });
+            return WindowInsetsCompat.CONSUMED;
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.main_menu_short_entered) {
+            Intent intent = new Intent(this, ActDetail.class);
             startActivity(intent);
-        });
-
+        }
+        return super.onOptionsItemSelected(item);
     }
-
-    private void debug(String message) {
-        Log.d("TextViewReadMore", message);
-    }
-
 }
