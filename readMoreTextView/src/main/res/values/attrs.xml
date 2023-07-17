@@ -27,8 +27,8 @@
             <flag name="dots" value="0"/>
             <flag name="none" value="1"/>
         </attr>
-        <attr name="android:layout_marginStart"/>
-        <attr name="android:layout_marginEnd"/>
+        <!--<attr name="android:layout_marginStart"/>
+        <attr name="android:layout_marginEnd"/>-->
     </declare-styleable>
 
 </resources>

@@ -27,9 +27,13 @@ public class ActDetail extends AppCompatActivity {
             getSupportActionBar().setTitle("Entered Text");
         }
 
-        TextViewReadMore txtEntered = findViewById(R.id.act_detail_txtEntered);
+        /*TextViewReadMore txtEntered = findViewById(R.id.act_detail_txtEntered);
         txtEntered.onClickExpand(v -> txtEntered.toggle());
-        txtEntered.onClickCollapse(v -> txtEntered.toggle());
+        txtEntered.onClickCollapse(v -> txtEntered.toggle());*/
+
+        TextViewReadMore txtAnim = findViewById(R.id.act_detail_txtAnim);
+        txtAnim.onClickExpand(v -> txtAnim.toggle());
+        txtAnim.onClickCollapse(v -> txtAnim.toggle());
 
     }
 

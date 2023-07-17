@@ -3,12 +3,14 @@ package com.erif.readmoretextview;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.text.LineBreaker;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -25,8 +27,11 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -71,8 +76,6 @@ public class TextViewReadMore extends AppCompatTextView {
     private View.OnClickListener onClickCollapse;
     private int actionClickColor = 0;
     private int ellipsisType = ELLIPSIS_TYPE_DOTS;
-
-    private int totalMarginSide = 0;
 
     private SpannableStringBuilder spanCollapsed;
     private SpannableStringBuilder spanExpanded;
@@ -126,10 +129,6 @@ public class TextViewReadMore extends AppCompatTextView {
 
                 ellipsisType = typedArray.getInt(R.styleable.TextViewReadMore_ellipsisType, ELLIPSIS_TYPE_DOTS);
 
-                int marginStart = typedArray.getDimensionPixelSize(R.styleable.TextViewReadMore_android_layout_marginStart, 0);
-                int marginEnd = typedArray.getDimensionPixelSize(R.styleable.TextViewReadMore_android_layout_marginEnd, 0);
-                totalMarginSide = marginStart + marginEnd;
-
             } finally {
                 typedArray.recycle();
             }
@@ -179,7 +178,7 @@ public class TextViewReadMore extends AppCompatTextView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int givenWidth = MeasureSpec.getSize(widthMeasureSpec);
         int sidePadding = getCompoundPaddingStart() + getCompoundPaddingEnd();
-        lineWidth = givenWidth - sidePadding - totalMarginSide;
+        lineWidth = givenWidth - sidePadding;
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
@@ -208,6 +207,7 @@ public class TextViewReadMore extends AppCompatTextView {
                             lastLineLetterCount = lastLineLetter.length();
                             sumLineWidth += count;
                         }
+
                         float expandActionWidth = getPaint().measureText(" " + expandText);
                         float doubleExpandWith = expandActionWidth * 2;
 
@@ -242,7 +242,11 @@ public class TextViewReadMore extends AppCompatTextView {
                         updateParam(layout.getHeight());
                         setText(spanExpanded);
                     }
-                    setMovementMethod(LinkMovementMethod.getInstance());
+                    if (isJustified()) {
+                        setOnTouchListener(onTouchEvent());
+                    } else {
+                        setMovementMethod(LinkMovementMethod.getInstance());
+                    }
                     rebuild = false;
                 }
             } else {
@@ -275,7 +279,7 @@ public class TextViewReadMore extends AppCompatTextView {
         int end = text.length();
         span.setSpan(
                 new ForegroundColorSpan(expandTextColor), start,
-                end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+                end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE //Spanned.SPAN_INCLUSIVE_EXCLUSIVE
         );
         if (expandTextStyle == 1) {
             boldText(span, start, end);
@@ -366,6 +370,7 @@ public class TextViewReadMore extends AppCompatTextView {
         return span;
     }
 
+    @SuppressLint("RestrictedApi")
     public void toggle() {
         if (SystemClock.elapsedRealtime() - mLastClickTime <= animationDuration) { // 1000 = 1second
             return;
@@ -385,6 +390,19 @@ public class TextViewReadMore extends AppCompatTextView {
         }
         int end = collapsed ? fullHeight : halfHeight;
         ValueAnimator anim = ValueAnimator.ofInt(getHeight(), end);
+
+        /*
+         * Interpolator Open and Close
+         * new AnticipateOvershootInterpolator()
+         * new AnticipateInterpolator()
+         * new BounceInterpolator()
+         * new DecelerateInterpolator()
+         * new FastOutLinearInInterpolator()
+         * new FastOutSlowInInterpolator()
+         * new LinearOutSlowInInterpolator()
+         * TimeInterpolator interpolator = collapsed ? new AnticipateOvershootInterpolator() : new FastOutLinearInInterpolator();
+         */
+
         anim.setDuration(animationDuration);
         ViewGroup.LayoutParams params = getLayoutParams();
         anim.addUpdateListener(animation -> {
@@ -458,11 +476,11 @@ public class TextViewReadMore extends AppCompatTextView {
     }
 
 
-    /* Unused function
+
     private void debug(String message) {
         Log.d("TextViewReadMore", message);
     }
-
+    /* Unused function
     private String textReplaceSpace() {
         return text.replaceAll(" ", SPACE_CODE);
     }
@@ -485,6 +503,11 @@ public class TextViewReadMore extends AppCompatTextView {
                     .setIncludePad(getIncludeFontPadding())
                     .setAlignment(Layout.Alignment.ALIGN_NORMAL)
                     .build();
+            /* Unused
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                builder.setJustificationMode(getJustificationMode());
+            }
+            layout = builder.build();*/
         } else {
             layout = new StaticLayout(mSource, getPaint(), lineWidth, Layout.Alignment.ALIGN_NORMAL,
                     getLineSpacingMultiplier(), getLineSpacingExtra(), getIncludeFontPadding()
@@ -505,6 +528,10 @@ public class TextViewReadMore extends AppCompatTextView {
                     .setIncludePad(getIncludeFontPadding())
                     .setAlignment(Layout.Alignment.ALIGN_NORMAL)
                     .build();
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                builder.setJustificationMode(getJustificationMode());
+            }
+            layout = builder.build();*/
         } else {
             int maxLength = mSource.length();
             do {
@@ -516,6 +543,37 @@ public class TextViewReadMore extends AppCompatTextView {
             } while (layout.getLineCount() > 2);
         }
         return layout;
+    }
+
+    private boolean isJustified() {
+        boolean isJustified = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (getJustificationMode() == LineBreaker.JUSTIFICATION_MODE_INTER_WORD) {
+                isJustified = true;
+            }
+        }
+        return isJustified;
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private View.OnTouchListener onTouchEvent() {
+        return (v, event) -> {
+            if(v instanceof TextView tv){
+                if(event.getAction() == MotionEvent.ACTION_UP){
+                    int x = (int) (event.getX() - tv.getTotalPaddingLeft() + tv.getScrollX());
+                    int y = (int) (event.getY() - tv.getTotalPaddingTop() + tv.getScrollY());
+                    int line = tv.getLayout().getLineForVertical(y);
+                    int offset = tv.getLayout().getOffsetForHorizontal(line, x);
+                    if(tv.getText() instanceof Spanned spannable) {
+                        ClickableSpan[] links = spannable.getSpans(offset, offset, ClickableSpan.class);
+                        if (links.length > 0) {
+                            links[0].onClick(tv);
+                        }
+                    }
+                }
+            }
+            return true;
+        };
     }
 
 }
