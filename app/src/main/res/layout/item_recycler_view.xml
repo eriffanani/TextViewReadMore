@@ -37,10 +37,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="3dp"
-            android:textSize="14sp"
+            android:textSize="15sp"
             android:text="@string/lorem_ipsum1"
             android:textColor="@color/black"
             android:padding="10dp"
+            android:animationDuration="300"
             app:readMoreMaxLines="3"
             app:ellipsisType="dots"/>
 

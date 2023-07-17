@@ -11,13 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginStart="15dp"
         android:layout_marginTop="15dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
             android:text="Click to expand"
             android:textStyle="bold"/>
 
@@ -27,9 +28,21 @@
             android:layout_height="wrap_content"
             android:lineSpacingExtra="3dp"
             android:textSize="16sp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
             android:text="@string/lorem_entered"
             android:layout_marginTop="15dp"
             app:readMoreMaxLines="2"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Another Title"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:textStyle="bold"
+            android:layout_marginTop="10dp"
+            android:textSize="18sp"/>
 
     </LinearLayout>
 

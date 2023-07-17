@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">ReadMoreTextView</string>
 
-    <string name="lorem_ipsum2">Long text 1 Lorem ipsum at placerat massa Maecenas sodales rutrum est sed efficitur Nunc at Nunc at placerat massa Maecenas sodales
+    <string name="lorem_ipsum2">Long text 2 Lorem ipsum at placerat massa Maecenas sodales rutrum est sed efficitur Nunc at Nunc at placerat massa Maecenas sodales
         placerat massa. asdfasf Maecenas sodales rutrum est sed efficitur.</string>
 
-    <string name="lorem_ipsum1">Long text 2 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    <string name="lorem_ipsum1">Long text 1 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         Maecenas sodales rutrum est sed efficitur. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         Fusce eget ligula sed dolor accumsan tristique id vel turpis. Nam congue nunc hendrerit eros fermentum eleifend.
         Sed tristique facilisis imperdiet. Donec eget interdum dui.</string>

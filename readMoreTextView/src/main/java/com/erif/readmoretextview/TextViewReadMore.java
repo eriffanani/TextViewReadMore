@@ -25,7 +25,6 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -72,6 +71,11 @@ public class TextViewReadMore extends AppCompatTextView {
     private View.OnClickListener onClickCollapse;
     private int actionClickColor = 0;
     private int ellipsisType = ELLIPSIS_TYPE_DOTS;
+
+    private int totalMarginSide = 0;
+
+    private SpannableStringBuilder spanCollapsed;
+    private SpannableStringBuilder spanExpanded;
 
     private static long mLastClickTime = 0;
 
@@ -122,6 +126,10 @@ public class TextViewReadMore extends AppCompatTextView {
 
                 ellipsisType = typedArray.getInt(R.styleable.TextViewReadMore_ellipsisType, ELLIPSIS_TYPE_DOTS);
 
+                int marginStart = typedArray.getDimensionPixelSize(R.styleable.TextViewReadMore_android_layout_marginStart, 0);
+                int marginEnd = typedArray.getDimensionPixelSize(R.styleable.TextViewReadMore_android_layout_marginEnd, 0);
+                totalMarginSide = marginStart + marginEnd;
+
             } finally {
                 typedArray.recycle();
             }
@@ -154,13 +162,24 @@ public class TextViewReadMore extends AppCompatTextView {
                 rebuild = true;
             }
         }
-        super.setText(text, type);
+        if (isEllipsized(text)) {
+            if (spanExpanded != null && !collapsed) {
+                super.setText(spanExpanded, type);
+            } else if (spanCollapsed != null && collapsed) {
+                super.setText(spanCollapsed, type);
+            } else {
+                super.setText(text, type);
+            }
+        } else {
+            super.setText(text, type);
+        }
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int givenWidth = MeasureSpec.getSize(widthMeasureSpec);
-        lineWidth = givenWidth - getCompoundPaddingStart() - getCompoundPaddingEnd();
+        int sidePadding = getCompoundPaddingStart() + getCompoundPaddingEnd();
+        lineWidth = givenWidth - sidePadding - totalMarginSide;
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
@@ -172,7 +191,6 @@ public class TextViewReadMore extends AppCompatTextView {
     }
 
     private void buildSpan() {
-        debug("mHeight("+getHeight()+") "+text);
         if (!TextUtils.isEmpty(text)) {
             isEllipsized = isEllipsized(text);
             if (isEllipsized) {
@@ -212,30 +230,39 @@ public class TextViewReadMore extends AppCompatTextView {
                             finalText = truncatedText.toString().replace(DOTS_CODE, "");
                         String collapsedText = finalText + SPACE_CODE + exp;
                         StaticLayout layout = getStaticLayoutCollapsed(collapsedText);
-                        SpannableStringBuilder spanCollapsed = spanCollapsed(collapsedText);
+                        spanCollapsed = spanCollapsed(collapsedText);
                         if (spanCollapsed != null) {
                             updateParam(layout.getHeight());
                             setText(spanCollapsed);
                         }
+                        spanExpanded = spanExpanded();
                     } else {
-                        String collapsedTextSpace = collapseText.replaceAll(" ", SPACE_CODE);
-                        String fullText = text + SPACE_CODE + collapsedTextSpace;
-                        SpannableStringBuilder spanExpanded = spanExpanded(fullText);
-                        StaticLayout layout = getStaticLayout(fullText);
-                        setText(spanExpanded);
+                        spanExpanded = spanExpanded();
+                        StaticLayout layout = getStaticLayout(spanExpanded.toString());
                         updateParam(layout.getHeight());
+                        setText(spanExpanded);
                     }
                     setMovementMethod(LinkMovementMethod.getInstance());
                     rebuild = false;
                 }
             } else {
+                rebuild = false;
                 StaticLayout layout = getStaticLayout(text);
-                updateParam(layout.getHeight());
+                post(() -> updateParam(layout.getHeight()));
             }
         }
     }
 
-    private boolean isEllipsized(String text) {
+    private boolean isEllipsized(@Nullable CharSequence charSequence) {
+        if (charSequence == null)
+            return false;
+        StaticLayout layout = getStaticLayout(charSequence.toString());
+        return layout.getLineCount() > maxLines;
+    }
+
+    private boolean isEllipsized(@Nullable String text) {
+        if (text == null)
+            return false;
         StaticLayout layout = getStaticLayout(text);
         return layout.getLineCount() > maxLines;
     }
@@ -287,6 +314,13 @@ public class TextViewReadMore extends AppCompatTextView {
         return span;
     }
 
+    private SpannableStringBuilder spanExpanded() {
+        String collapsedTextSpace = collapseText.replaceAll(" ", SPACE_CODE);
+        String fullText = text + SPACE_CODE + collapsedTextSpace;
+        spanExpanded = spanExpanded(fullText);
+        return spanExpanded;
+    }
+
     private SpannableStringBuilder spanExpanded(String text) {
         SpannableStringBuilder span = new SpannableStringBuilder(text);
         int start = text.length() - collapseText.length();
@@ -311,7 +345,7 @@ public class TextViewReadMore extends AppCompatTextView {
             public void onClick(@NonNull View widget) {
                 if (onClickCollapse != null) {
                     new Handler(Looper.getMainLooper()).postDelayed(
-                            () -> onClickCollapse.onClick(widget), 150
+                            () -> onClickCollapse.onClick(widget), 100
                     );
                 }
             }
@@ -364,7 +398,9 @@ public class TextViewReadMore extends AppCompatTextView {
                 super.onAnimationStart(animation);
                 isAnimate = true;
                 if (collapsed) {
-                    setText(text, BufferType.SPANNABLE);
+                    collapsed = false;
+                    setText(spanExpanded);
+                    collapsed = true;
                 }
             }
             @Override
@@ -374,7 +410,8 @@ public class TextViewReadMore extends AppCompatTextView {
                 collapsed = !collapsed;
                 rebuild = true;
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    if (toggleListener != null) toggleListener.onToggle(collapsed);
+                    if (toggleListener != null)
+                        toggleListener.onToggle(collapsed);
                 }, 0);
             }
         });
@@ -421,10 +458,11 @@ public class TextViewReadMore extends AppCompatTextView {
     }
 
 
+    /* Unused function
     private void debug(String message) {
         Log.d("TextViewReadMore", message);
     }
-    /* Unused function
+
     private String textReplaceSpace() {
         return text.replaceAll(" ", SPACE_CODE);
     }

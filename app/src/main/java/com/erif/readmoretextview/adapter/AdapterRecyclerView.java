@@ -41,6 +41,9 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<RecyclerView.ViewH
                 item.setCollapsed(collapsed);
                 update(position);
             });
+
+            mHolder.img.setOnClickListener(v -> update(position));
+
         }
     }
 

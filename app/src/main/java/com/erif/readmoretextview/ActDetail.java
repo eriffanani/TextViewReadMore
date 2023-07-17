@@ -28,12 +28,8 @@ public class ActDetail extends AppCompatActivity {
         }
 
         TextViewReadMore txtEntered = findViewById(R.id.act_detail_txtEntered);
-        txtEntered.onClickExpand(v -> {
-            txtEntered.toggle();
-        });
-        txtEntered.onClickCollapse(v -> {
-            txtEntered.toggle();
-        });
+        txtEntered.onClickExpand(v -> txtEntered.toggle());
+        txtEntered.onClickCollapse(v -> txtEntered.toggle());
 
     }
 

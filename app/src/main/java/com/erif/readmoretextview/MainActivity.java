@@ -66,9 +66,18 @@ public class MainActivity extends AppCompatActivity {
         };
 
         int [] img = new int[] {
-                R.mipmap.img1, R.mipmap.img3, R.mipmap.img2, R.mipmap.img5, R.mipmap.img4,
-                R.mipmap.img1, R.mipmap.img2, R.mipmap.img3, R.mipmap.img4, R.mipmap.img5,
-                R.mipmap.img2, R.mipmap.img1
+                R.mipmap.img1,
+                R.mipmap.img3,
+                R.mipmap.img2,
+                R.mipmap.img5,
+                R.mipmap.img4,
+                R.mipmap.img1,
+                R.mipmap.img2,
+                R.mipmap.img3,
+                R.mipmap.img4,
+                R.mipmap.img5,
+                R.mipmap.img2,
+                R.mipmap.img1
         };
 
         for (int i=0; i<arr.length; i++) {
