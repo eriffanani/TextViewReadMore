@@ -14,6 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
@@ -23,6 +24,7 @@ import com.erif.readmoretextview.model.ModelItemRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         SimpleItemAnimator animator = (SimpleItemAnimator) recyclerView.getItemAnimator();
         if (animator != null)
             animator.setSupportsChangeAnimations(false);
@@ -65,23 +68,49 @@ public class MainActivity extends AppCompatActivity {
                 getString(R.string.lorem_ipsum2)
         };
 
+        String[] arrName = new String[] {
+                "John Doe", "Louise Bourgeois",
+                "Rafael Nadal", "Maria Sharapova",
+                "C. Ronaldo", "Serena Williams",
+                "John Doe", "Louise Bourgeois",
+                "Rafael Nadal", "Maria Sharapova",
+                "C. Ronaldo", "Serena Williams"
+        };
+
+        int [] profile = new int[] {
+                R.mipmap.man1,
+                R.mipmap.women1,
+                R.mipmap.man2,
+                R.mipmap.women2,
+                R.mipmap.man3,
+                R.mipmap.women3,
+                R.mipmap.man1,
+                R.mipmap.women1,
+                R.mipmap.man2,
+                R.mipmap.women2,
+                R.mipmap.man3,
+                R.mipmap.women3
+        };
+
         int [] img = new int[] {
-                R.mipmap.img1,
-                R.mipmap.img3,
-                R.mipmap.img2,
-                R.mipmap.img5,
-                R.mipmap.img4,
-                R.mipmap.img1,
                 R.mipmap.img2,
                 R.mipmap.img3,
                 R.mipmap.img4,
                 R.mipmap.img5,
                 R.mipmap.img2,
-                R.mipmap.img1
+                R.mipmap.img3,
+                R.mipmap.img4,
+                R.mipmap.img5,
+                R.mipmap.img2,
+                R.mipmap.img3,
+                R.mipmap.img4
         };
 
         for (int i=0; i<arr.length; i++) {
-            ModelItemRecyclerView item = new ModelItemRecyclerView(i, img[i], arr[i]);
+            ModelItemRecyclerView item = new ModelItemRecyclerView(
+                    i, arrName[i], profile[i], img[i], arr[i]
+            );
+            item.setShowImage(new Random().nextBoolean());
             if (i == 3) {
                 item.setCollapsed(false);
             }

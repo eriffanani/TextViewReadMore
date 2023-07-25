@@ -21,14 +21,44 @@
             <flag name="bold" value="1" />
             <flag name="italic" value="2" />
         </attr>
-        <attr name="android:animationDuration"/>
         <attr name="actionClickColor" format="reference|color"/>
         <attr name="ellipsisType">
             <flag name="dots" value="0"/>
             <flag name="none" value="1"/>
         </attr>
-        <!--<attr name="android:layout_marginStart"/>
-        <attr name="android:layout_marginEnd"/>-->
+        <attr name="duration"/>
+        <attr name="durationExpand" format="integer" min="0"/>
+        <attr name="durationCollapse" format="integer" min="0"/>
+        <attr name="interpolator" format="integer">
+            <flag name="decelerate" value="0"/>
+            <flag name="accelerate" value="1"/>
+            <flag name="anticipate_overshoot" value="2"/>
+            <flag name="anticipate" value="3"/>
+            <flag name="bounce" value="4"/>
+            <flag name="fast_out_linear_in" value="5"/>
+            <flag name="fast_out_slow_in" value="6"/>
+            <flag name="linear_out_slow_in" value="7"/>
+        </attr>
+        <attr name="interpolatorExpand" format="integer">
+            <flag name="decelerate" value="0"/>
+            <flag name="accelerate" value="1"/>
+            <flag name="anticipate_overshoot" value="2"/>
+            <flag name="anticipate" value="3"/>
+            <flag name="bounce" value="4"/>
+            <flag name="fast_out_linear_in" value="5"/>
+            <flag name="fast_out_slow_in" value="6"/>
+            <flag name="linear_out_slow_in" value="7"/>
+        </attr>
+        <attr name="interpolatorCollapse" format="integer">
+            <flag name="decelerate" value="0"/>
+            <flag name="accelerate" value="1"/>
+            <flag name="anticipate_overshoot" value="2"/>
+            <flag name="anticipate" value="3"/>
+            <flag name="bounce" value="4"/>
+            <flag name="fast_out_linear_in" value="5"/>
+            <flag name="fast_out_slow_in" value="6"/>
+            <flag name="linear_out_slow_in" value="7"/>
+        </attr>
     </declare-styleable>
 
 </resources>

@@ -3,15 +3,23 @@ package com.erif.readmoretextview.model;
 public class ModelItemRecyclerView {
 
     private int id;
+
+    private String name;
+
+    private int profile;
+
     private int img;
 
     private String text;
     private boolean collapsed = true;
+    private boolean showImage = false;
 
     public ModelItemRecyclerView() {}
 
-    public ModelItemRecyclerView(int id, int img, String text) {
+    public ModelItemRecyclerView(int id, String name, int profile, int img, String text) {
         this.id = id;
+        this.name = name;
+        this.profile = profile;
         this.img = img;
         this.text = text;
     }
@@ -22,6 +30,14 @@ public class ModelItemRecyclerView {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getProfile() {
+        return profile;
     }
 
     public String getText() {
@@ -46,5 +62,13 @@ public class ModelItemRecyclerView {
 
     public void setCollapsed(boolean collapsed) {
         this.collapsed = collapsed;
+    }
+
+    public boolean isShowImage() {
+        return showImage;
+    }
+
+    public void setShowImage(boolean showImage) {
+        this.showImage = showImage;
     }
 }

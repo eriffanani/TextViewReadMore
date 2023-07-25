@@ -5,15 +5,6 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SimpleItemAnimator;
-
-import com.erif.readmoretextview.adapter.AdapterRecyclerView;
-import com.erif.readmoretextview.model.ModelItemRecyclerView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ActDetail extends AppCompatActivity {
 
@@ -24,16 +15,20 @@ public class ActDetail extends AppCompatActivity {
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Entered Text");
+            getSupportActionBar().setTitle("Another Detail Example");
         }
 
-        /*TextViewReadMore txtEntered = findViewById(R.id.act_detail_txtEntered);
+        TextViewReadMore txtEntered = findViewById(R.id.act_detail_txtEntered);
         txtEntered.onClickExpand(v -> txtEntered.toggle());
-        txtEntered.onClickCollapse(v -> txtEntered.toggle());*/
+        txtEntered.onClickCollapse(v -> txtEntered.toggle());
 
         TextViewReadMore txtAnim = findViewById(R.id.act_detail_txtAnim);
         txtAnim.onClickExpand(v -> txtAnim.toggle());
         txtAnim.onClickCollapse(v -> txtAnim.toggle());
+
+        TextViewReadMore txtJustify = findViewById(R.id.act_detail_txtJustify);
+        txtJustify.onClickExpand(v -> txtJustify.toggle());
+        txtJustify.onClickCollapse(v -> txtJustify.toggle());
 
     }
 

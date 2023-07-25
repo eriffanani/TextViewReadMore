@@ -83,7 +83,7 @@
     <string name="lorem_short">Short text Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         Maecenas sodales rutrum est sed efficitur. Lorem ipsum dolor sit amet.</string>
 
-    <string name="lorem_entered">This is\nentered\ntext example\nlorem ipsum\ndolor sit amet. \nNunc at placerat massa Maecenas\nsodales
+    <string name="lorem_entered">This is\nentered\ntext example\nlorem ipsum\ndolor sit amet. \n\nNunc at placerat massa Maecenas\nsodales
         placerat massa. asdfasf Maecenas \nsodales rutrum \nest sed efficitur.</string>
 
     <string name="lorem_short_entered">ejej\ndee\nd\nd\nf\nf\nd\nd</string>
@@ -93,5 +93,20 @@
 
     <string name="read_more">Read More</string>
     <string name="read_less">Read Less</string>
+
+    <string name="lorem_ipsum_animated">This text is using bounce effect, and 800 millis duration on expanding, and anticipate overshoot effect, and 900 millis duration when collapsing.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas sodales rutrum est sed efficitur. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Fusce eget ligula sed dolor accumsan tristique id vel turpis.</string>
+
+    <string name="lorem_ipsum_justified">This is justified text inter word text example. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris pretium mauris vel
+        lacus vulputate, ac dictum velit tempus. Suspendisse potenti. Proin eget sem ullamcorper, faucibus orci vel,
+        facilisis sem. Nullam in metus at eros mattis malesuada. Vestibulum id justo sed ex interdum ultrices. Vestibulum
+        lobortis posuere felis, a dictum tortor. Etiam a gravida augue, at interdum lacus. Ut finibus metus orci, eget
+        lacinia turpis imperdiet et. Donec in sagittis erat. Aenean egestas vulputate nunc vel pulvinar. Pellentesque
+        habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Maecenas nec orci porta,
+        finibus quam ut, fringilla sapien. Maecenas tristique justo turpis, non pretium ligula sagittis luctus.
+        Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum
+        scelerisque tristique hendrerit.
+    </string>
 
 </resources>

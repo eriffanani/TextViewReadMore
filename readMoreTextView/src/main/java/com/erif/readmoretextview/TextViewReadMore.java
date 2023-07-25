@@ -1,7 +1,10 @@
 package com.erif.readmoretextview;
 
+import static java.lang.Math.max;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -27,16 +30,23 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AnticipateInterpolator;
+import android.view.animation.AnticipateOvershootInterpolator;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
+import androidx.interpolator.view.animation.FastOutLinearInInterpolator;
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator;
 
 public class TextViewReadMore extends AppCompatTextView {
 
@@ -69,7 +79,8 @@ public class TextViewReadMore extends AppCompatTextView {
     private int fullHeight = 0;
     private boolean isAnimate = false;
     private boolean isEllipsized = false;
-    private int animationDuration = 200;
+    private int durationExpand = 300;
+    private int durationCollapse = 300;
     private ToggleListener toggleListener;
 
     private View.OnClickListener onClickExpand;
@@ -81,6 +92,9 @@ public class TextViewReadMore extends AppCompatTextView {
     private SpannableStringBuilder spanExpanded;
 
     private static long mLastClickTime = 0;
+
+    private int interpolatorExpand = 0;
+    private int interpolatorCollapse = 0;
 
     public TextViewReadMore(@NonNull Context context) {
         super(context);
@@ -106,7 +120,7 @@ public class TextViewReadMore extends AppCompatTextView {
             try {
                 text = typedArray.getString(R.styleable.TextViewReadMore_android_text);
                 int getMaxLines = typedArray.getInt(R.styleable.TextViewReadMore_readMoreMaxLines, maxLines);
-                maxLines = Math.max(getMaxLines, maxLines);
+                maxLines = max(getMaxLines, maxLines);
                 collapsed = typedArray.getBoolean(R.styleable.TextViewReadMore_collapsed, true);
 
                 String getExpandText = typedArray.getString(R.styleable.TextViewReadMore_expandText);
@@ -124,10 +138,15 @@ public class TextViewReadMore extends AppCompatTextView {
                 int defaultActionClickColor = ContextCompat.getColor(context, R.color.text_view_read_more_button_hover_color);
                 actionClickColor = typedArray.getColor(R.styleable.TextViewReadMore_actionClickColor, defaultActionClickColor);
 
-                int getAnimationDuration = typedArray.getInt(R.styleable.TextViewReadMore_android_animationDuration, animationDuration);
-                animationDuration = Math.max(getAnimationDuration, 100);
+                int getDuration = typedArray.getInt(R.styleable.TextViewReadMore_duration, 300);
+                durationExpand = typedArray.getInt(R.styleable.TextViewReadMore_durationExpand, getDuration);
+                durationCollapse = typedArray.getInt(R.styleable.TextViewReadMore_durationCollapse, getDuration);
 
                 ellipsisType = typedArray.getInt(R.styleable.TextViewReadMore_ellipsisType, ELLIPSIS_TYPE_DOTS);
+
+                int interpolator = typedArray.getInt(R.styleable.TextViewReadMore_interpolator, 0);
+                interpolatorExpand = typedArray.getInt(R.styleable.TextViewReadMore_interpolatorExpand, interpolator);
+                interpolatorCollapse = typedArray.getInt(R.styleable.TextViewReadMore_interpolatorCollapse, interpolator);
 
             } finally {
                 typedArray.recycle();
@@ -279,7 +298,7 @@ public class TextViewReadMore extends AppCompatTextView {
         int end = text.length();
         span.setSpan(
                 new ForegroundColorSpan(expandTextColor), start,
-                end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE //Spanned.SPAN_INCLUSIVE_EXCLUSIVE
+                end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE
         );
         if (expandTextStyle == 1) {
             boldText(span, start, end);
@@ -297,7 +316,7 @@ public class TextViewReadMore extends AppCompatTextView {
             public void onClick(@NonNull View widget) {
                 if (onClickExpand != null) {
                     new Handler(Looper.getMainLooper()).postDelayed(
-                            () -> onClickExpand.onClick(widget), 150
+                            () -> onClickExpand.onClick(widget), 100
                     );
                 }
             }
@@ -347,10 +366,12 @@ public class TextViewReadMore extends AppCompatTextView {
         span.setSpan(new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
-                if (onClickCollapse != null) {
-                    new Handler(Looper.getMainLooper()).postDelayed(
-                            () -> onClickCollapse.onClick(widget), 100
-                    );
+                if (!collapseText.isEmpty() && !collapseText.equals(" ")) {
+                    if (onClickCollapse != null) {
+                        new Handler(Looper.getMainLooper()).postDelayed(
+                                () -> onClickCollapse.onClick(widget), 100
+                        );
+                    }
                 }
             }
 
@@ -372,7 +393,9 @@ public class TextViewReadMore extends AppCompatTextView {
 
     @SuppressLint("RestrictedApi")
     public void toggle() {
-        if (SystemClock.elapsedRealtime() - mLastClickTime <= animationDuration) { // 1000 = 1second
+        int limitDuration = collapsed ? durationExpand : durationCollapse;
+        int limit = max(limitDuration, 1000);
+        if (SystemClock.elapsedRealtime() - mLastClickTime <= limit) {
             return;
         }
         mLastClickTime = SystemClock.elapsedRealtime();
@@ -390,20 +413,8 @@ public class TextViewReadMore extends AppCompatTextView {
         }
         int end = collapsed ? fullHeight : halfHeight;
         ValueAnimator anim = ValueAnimator.ofInt(getHeight(), end);
-
-        /*
-         * Interpolator Open and Close
-         * new AnticipateOvershootInterpolator()
-         * new AnticipateInterpolator()
-         * new BounceInterpolator()
-         * new DecelerateInterpolator()
-         * new FastOutLinearInInterpolator()
-         * new FastOutSlowInInterpolator()
-         * new LinearOutSlowInInterpolator()
-         * TimeInterpolator interpolator = collapsed ? new AnticipateOvershootInterpolator() : new FastOutLinearInInterpolator();
-         */
-
-        anim.setDuration(animationDuration);
+        anim.setInterpolator(collapsed ? animationExpand() : animationCollapse());
+        anim.setDuration(collapsed ? durationExpand : durationCollapse);
         ViewGroup.LayoutParams params = getLayoutParams();
         anim.addUpdateListener(animation -> {
             Object value = animation.getAnimatedValue();
@@ -437,6 +448,40 @@ public class TextViewReadMore extends AppCompatTextView {
             anim.start();
     }
 
+    public void setInterpolator(@InterpolatorType int interpolator) {
+        this.interpolatorExpand = interpolator;
+        this.interpolatorCollapse = interpolator;
+    }
+
+    public void setInterpolatorExpand(@InterpolatorType int interpolator) {
+        this.interpolatorExpand = interpolator;
+    }
+
+    public void setInterpolatorCollapse(@InterpolatorType int interpolator) {
+        this.interpolatorCollapse = interpolator;
+    }
+
+    private TimeInterpolator animationExpand() {
+        return animation(interpolatorExpand);
+    }
+
+    private TimeInterpolator animationCollapse() {
+        return animation(interpolatorCollapse);
+    }
+
+    private TimeInterpolator animation(int value) {
+        return switch (value) {
+            case 1 -> new AccelerateInterpolator();
+            case 2 -> new AnticipateOvershootInterpolator();
+            case 3 -> new AnticipateInterpolator();
+            case 4 -> new BounceInterpolator();
+            case 5 -> new FastOutLinearInInterpolator();
+            case 6 -> new FastOutSlowInInterpolator();
+            case 7 -> new LinearOutSlowInInterpolator();
+            default -> new DecelerateInterpolator();
+        };
+    }
+
     private void italicText(SpannableStringBuilder builder, int start, int end) {
         builder.setSpan(new StyleSpan(Typeface.ITALIC),
                 start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE
@@ -465,22 +510,50 @@ public class TextViewReadMore extends AppCompatTextView {
         this.onClickCollapse = onClickCollapse;
     }
 
+    public void setDuration(long millis) {
+        int value = (int) millis;
+        this.durationExpand = value;
+        this.durationCollapse = value;
+    }
+
+    public void setDuration(double seconds) {
+        int value = (int) seconds * 1000;
+        this.durationExpand = value;
+        this.durationCollapse = value;
+    }
+
+    public void setDurationExpand(long millis) {
+        this.durationExpand = (int) millis;
+    }
+
+    public void setDurationExpand(double seconds) {
+        this.durationExpand = (int) seconds * 1000;
+    }
+
+    public void setDurationCollapse(long millis) {
+        this.durationCollapse = (int) millis;
+    }
+
+    public void setDurationCollapse(double seconds) {
+        this.durationCollapse = (int) seconds * 1000;
+    }
+
     private String ellipsize(String text, int size) {
         if (text.isEmpty() || size <= 0) {
             return "";
         } else if (text.length() <= size) {
             return text;
         } else {
-            return text.substring(0, Math.max(size - 1, 0))+"...";
+            return text.substring(0, max(size - 1, 0))+"...";
         }
     }
 
-
-
+    /*
+    Unused function
     private void debug(String message) {
         Log.d("TextViewReadMore", message);
     }
-    /* Unused function
+
     private String textReplaceSpace() {
         return text.replaceAll(" ", SPACE_CODE);
     }
@@ -528,7 +601,8 @@ public class TextViewReadMore extends AppCompatTextView {
                     .setIncludePad(getIncludeFontPadding())
                     .setAlignment(Layout.Alignment.ALIGN_NORMAL)
                     .build();
-            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            /* Unused
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 builder.setJustificationMode(getJustificationMode());
             }
             layout = builder.build();*/

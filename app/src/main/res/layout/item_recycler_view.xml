@@ -1,50 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardUseCompatPadding="true"
-    app:cardCornerRadius="15dp"
-    app:cardElevation="1.5dp">
+    android:orientation="vertical"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="10dp"
+            android:paddingEnd="0dp">
 
-            <ImageView
-                android:id="@+id/item_recyclerView_img"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintDimensionRatio="16:7"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:src="@mipmap/img2"
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/item_recyclerView_imgProfile"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:scaleType="centerCrop"
-                tools:ignore="ContentDescription" />
+                app:shapeAppearanceOverlay="@style/CircleImage"
+                android:src="@mipmap/man1"/>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="10dp">
 
-        <com.erif.readmoretextview.TextViewReadMore
-            android:id="@+id/item_recyclerView_txt"
+                <TextView
+                    android:id="@+id/item_recyclerView_txtName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Name"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/item_recyclerView_txtSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This is subtitle"
+                    android:textColor="#797979"
+                    android:textSize="13sp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:lineSpacingExtra="3dp"
-            android:textSize="15sp"
-            android:text="@string/lorem_ipsum1"
-            android:textColor="@color/black"
-            android:padding="10dp"
-            android:animationDuration="300"
-            app:readMoreMaxLines="3"
-            app:ellipsisType="dots"/>
+            android:src="@drawable/ic_dots"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
+            app:tint="#727272"
+            tools:ignore="ContentDescription" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
-</androidx.cardview.widget.CardView>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <ImageView
+            android:id="@+id/item_recyclerView_img"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@mipmap/man1"
+            android:scaleType="centerCrop"
+            tools:ignore="ContentDescription" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    <!--Write Expandable TextView Here-->
+
+
+    <com.erif.readmoretextview.TextViewReadMore
+        android:id="@+id/item_recyclerView_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="3dp"
+        android:textSize="15sp"
+        android:text="@string/lorem_ipsum1"
+        android:textColor="@color/black"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:layout_marginTop="8dp"
+        android:animationDuration="300"
+        app:readMoreMaxLines="3"
+        app:ellipsisType="dots"/>
+
+</LinearLayout>
