@@ -14,7 +14,7 @@ dependencyResolutionManagement {
 #### build.gradle(app)
 ```kotlin
 dependencies {
-    implementation 'com.github.eriffanani:TextViewReadMore:3.1.0'
+    implementation 'com.github.eriffanani:TextViewReadMore:4.0.0'
 }
 ```
 
@@ -52,13 +52,25 @@ dependencies {
     app:collapsed="false" (Default true)/>
 ```
 
-## Result
-<img src="https://user-images.githubusercontent.com/26743731/167337556-b46de2b5-9115-4d4e-ba48-7d48adbd018d.gif" width="400"/> <img src="https://user-images.githubusercontent.com/26743731/167338135-9d819401-aa26-4a20-ab83-9e9cc6b3886f.gif" width="400"/>
-
-### Animation Duration
+### Animation
 ```xml
 <com.erif.readmoretextview.TextViewReadMore
-    android:animationDuration="500" (Default 200)/>
+        app:duration="200"
+        app:interpolator=""
+        app:interpolatorExpand="bounce"
+        app:durationExpand="800"
+        app:interpolatorCollapse="anticipate_overshoot"
+        app:durationCollapse="900"/>
+
+<!--Animation Interpolator-->
+<flag name="decelerate"/>
+<flag name="accelerate"/>
+<flag name="anticipate_overshoot"/>
+<flag name="anticipate"/>
+<flag name="bounce"/>
+<flag name="fast_out_linear_in"/>
+<flag name="fast_out_slow_in"/>
+<flag name="linear_out_slow_in"/>
 ```
 
 ### Ellipsis Type
@@ -86,6 +98,10 @@ txtReadMore.toggleListener(collapsed -> { // TODO ACTION });
 ```kotlin
 txtReadMore.toggleListener { collapsed -> // TODO ACTION }
 ```
+
+## Result
+<img src="https://github.com/eriffanani/TextViewReadMore/assets/26743731/aaee9b13-b095-4f3e-95f4-6319c3e2dbc9" width="300"/>
+
 ### With recyclerview
 * Use collapse function to onBindViewHolder
 ```java
@@ -114,6 +130,8 @@ holder.text.onClickExpand(v -> {
     notifyItemChanged(position);
 });
 ```
+## Result
+<img src="https://github.com/eriffanani/TextViewReadMore/assets/26743731/9315357b-6974-4796-a4db-df2d5bd56d74" width="300"/>
 
 #### Information
 This library is still being developed further, please provide feedback if you find a bug. Thank you
