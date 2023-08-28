@@ -14,7 +14,7 @@ dependencyResolutionManagement {
 #### build.gradle(app)
 ```kotlin
 dependencies {
-    implementation 'com.github.eriffanani:TextViewReadMore:4.0.0'
+    implementation 'com.github.eriffanani:TextViewReadMore:4.1.0'
 }
 ```
 
