@@ -109,4 +109,8 @@
         scelerisque tristique hendrerit.
     </string>
 
+    <string name="numbers">
+        1\n2a\n3\n4
+    </string>
+
 </resources>

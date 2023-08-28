@@ -41,6 +41,25 @@
             app:collapseTextColor="#E91E63"
             app:collapseTextStyle="bold"/>
 
+        <com.erif.readmoretextview.TextViewReadMore
+            android:id="@+id/act_detail_txtEntered2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="3dp"
+            android:textSize="16sp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:text="@string/numbers"
+            android:layout_marginTop="10dp"
+            app:readMoreMaxLines="2"
+            app:expandText="Read More"
+            app:expandTextStyle="bold|italic"
+            app:expandTextUnderline="true"
+            app:expandTextColor="#03A9F4"
+            app:collapseText="Close"
+            app:collapseTextColor="#E91E63"
+            app:collapseTextStyle="bold"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -72,7 +91,7 @@
             app:interpolatorExpand="bounce"
             app:durationExpand="800"
             app:interpolatorCollapse="anticipate_overshoot"
-            app:durationCollapse="900"/>
+            app:durationCollapse="900" />
 
         <TextView
             android:layout_width="wrap_content"

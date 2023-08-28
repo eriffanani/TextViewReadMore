@@ -30,6 +30,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +53,7 @@ public class TextViewReadMore extends AppCompatTextView {
 
     private static final String DEFAULT_EXPAND_TEXT = "Read More";
     private static final String DEFAULT_COLLAPSE_TEXT = "Close";
-    private static final String DOTS_CODE = "\u2026";
+    private static final String DOTS_CODE = "…"; // u2026
     private static final String SPACE_CODE = "\u00A0";
 
     private static final int ELLIPSIS_TYPE_DOTS = 0;
@@ -216,20 +217,24 @@ public class TextViewReadMore extends AppCompatTextView {
                     if (collapsed) {
                         StaticLayout layoutDefault = getStaticLayoutCollapsed(text);
                         int sumLineWidth = 0;
+                        /* Unused
                         CharSequence lastLineLetter = null;
                         int lastLineLetterCount = 0;
+                        */
                         for (int i = 0; i < maxLines; i++) {
                             int count = (int) layoutDefault.getLineWidth(i);
+                            /* Unused
                             int start = layoutDefault.getLineStart(i);
                             int end = layoutDefault.getLineEnd(i);
                             lastLineLetter = text.subSequence(start, end);
                             lastLineLetterCount = lastLineLetter.length();
+                            */
                             sumLineWidth += count;
                         }
 
                         float expandActionWidth = getPaint().measureText(" " + expandText);
                         float doubleExpandWith = expandActionWidth * 2;
-
+                        /* Unused
                         if (lastLineLetterCount < 3) {
                             if (lastLineLetter != null) {
                                 String lastChar = lastLineLetter.toString().replaceAll("\n", "");
@@ -237,12 +242,15 @@ public class TextViewReadMore extends AppCompatTextView {
                                 sumLineWidth += lastLineLetterAdd;
                             }
                         }
+                        */
 
                         float truncatedTextWidth = sumLineWidth - expandActionWidth;
                         if (sumLineWidth < doubleExpandWith) {
                             truncatedTextWidth = sumLineWidth;
                         }
+
                         CharSequence truncatedText = TextUtils.ellipsize(text, getPaint(), truncatedTextWidth, TextUtils.TruncateAt.END);
+                        Log.d("Collapse", truncatedText.toString());
                         String exp = expandText.replaceAll(" ", SPACE_CODE);
                         String finalText = truncatedText.toString();
                         if (ellipsisType == ELLIPSIS_TYPE_NONE)

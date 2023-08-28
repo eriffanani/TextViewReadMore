@@ -19,6 +19,7 @@ afterEvaluate {
 }
 
 android {
+
     compileSdk 33
 
     defaultConfig {

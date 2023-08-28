@@ -22,6 +22,10 @@ public class ActDetail extends AppCompatActivity {
         txtEntered.onClickExpand(v -> txtEntered.toggle());
         txtEntered.onClickCollapse(v -> txtEntered.toggle());
 
+        TextViewReadMore txtEntered2 = findViewById(R.id.act_detail_txtEntered2);
+        txtEntered2.onClickExpand(v -> txtEntered2.toggle());
+        txtEntered2.onClickCollapse(v -> txtEntered2.toggle());
+
         TextViewReadMore txtAnim = findViewById(R.id.act_detail_txtAnim);
         txtAnim.onClickExpand(v -> txtAnim.toggle());
         txtAnim.onClickCollapse(v -> txtAnim.toggle());
