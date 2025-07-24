@@ -1,10 +1,12 @@
-package com.erif.readmoretextview;
+package com.erif.readmoretextviewdemo;
 
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.erif.readmoretextview.TextViewReadMore;
 
 public class ActDetail extends AppCompatActivity {
 

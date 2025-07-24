@@ -1,4 +1,4 @@
-package com.erif.readmoretextview;
+package com.erif.readmoretextviewdemo;
 
 import android.content.Context;
 

@@ -1,4 +1,4 @@
-package com.erif.readmoretextview;
+package com.erif.readmoretextviewdemo;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,8 +19,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
-import com.erif.readmoretextview.adapter.AdapterRecyclerView;
-import com.erif.readmoretextview.model.ModelItemRecyclerView;
+import com.erif.readmoretextviewdemo.adapter.AdapterRecyclerView;
+import com.erif.readmoretextviewdemo.model.ModelItemRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;

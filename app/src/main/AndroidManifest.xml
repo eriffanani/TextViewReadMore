@@ -9,11 +9,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ReadMoreTextView">
         <activity
-            android:name=".ActDetail"
+            android:name="com.erif.readmoretextviewdemo.ActDetail"
             android:exported="false"
             android:theme="@style/Theme.Detail"/>
         <activity
-            android:name=".MainActivity"
+            android:name="com.erif.readmoretextviewdemo.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

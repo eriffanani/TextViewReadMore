@@ -1,4 +1,4 @@
-package com.erif.readmoretextview.model;
+package com.erif.readmoretextviewdemo.model;
 
 public class ModelItemRecyclerView {
 

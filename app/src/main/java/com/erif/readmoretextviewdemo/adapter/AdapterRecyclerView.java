@@ -1,4 +1,4 @@
-package com.erif.readmoretextview.adapter;
+package com.erif.readmoretextviewdemo.adapter;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
@@ -10,9 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.erif.readmoretextview.R;
+import com.erif.readmoretextviewdemo.R;
 import com.erif.readmoretextview.TextViewReadMore;
-import com.erif.readmoretextview.model.ModelItemRecyclerView;
+import com.erif.readmoretextviewdemo.model.ModelItemRecyclerView;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.text.SimpleDateFormat;
